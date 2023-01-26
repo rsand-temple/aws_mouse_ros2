@@ -1,0 +1,91 @@
+[0.000000] (-) TimerEvent: {}
+[0.000277] (img_recognition) JobQueued: {'identifier': 'img_recognition', 'dependencies': OrderedDict()}
+[0.000336] (jetbot_description) JobQueued: {'identifier': 'jetbot_description', 'dependencies': OrderedDict()}
+[0.000374] (jetbot_navigation) JobQueued: {'identifier': 'jetbot_navigation', 'dependencies': OrderedDict()}
+[0.000408] (jetbot_slam) JobQueued: {'identifier': 'jetbot_slam', 'dependencies': OrderedDict()}
+[0.000453] (maze_demo) JobQueued: {'identifier': 'maze_demo', 'dependencies': OrderedDict()}
+[0.000486] (maze_world) JobQueued: {'identifier': 'maze_world', 'dependencies': OrderedDict()}
+[0.000518] (mouse_smach) JobQueued: {'identifier': 'mouse_smach', 'dependencies': OrderedDict()}
+[0.000551] (pid_tune) JobQueued: {'identifier': 'pid_tune', 'dependencies': OrderedDict()}
+[0.000584] (img_recognition) JobStarted: {'identifier': 'img_recognition'}
+[0.012469] (jetbot_description) JobStarted: {'identifier': 'jetbot_description'}
+[0.016632] (img_recognition) JobProgress: {'identifier': 'img_recognition', 'progress': 'cmake'}
+[0.016827] (img_recognition) Command: {'cmd': ['/usr/bin/cmake', '/home/rsand/aws_mouse/src/img_recognition', '-DCATKIN_INSTALL_INTO_PREFIX_ROOT=0', '-DCMAKE_INSTALL_PREFIX=/home/rsand/aws_mouse/install/img_recognition'], 'cwd': '/home/rsand/aws_mouse/build/img_recognition', 'env': OrderedDict([('LESSOPEN', '| /usr/bin/lesspipe %s'), ('USER', 'rsand'), ('XDG_SESSION_TYPE', 'x11'), ('SHLVL', '1'), ('LD_LIBRARY_PATH', '/opt/ros/rolling/opt/rviz_ogre_vendor/lib:/opt/ros/rolling/lib/x86_64-linux-gnu:/opt/ros/rolling/lib'), ('HOME', '/home/rsand'), ('OLDPWD', '/home/rsand'), ('DESKTOP_SESSION', 'ubuntu'), ('GNOME_SHELL_SESSION_MODE', 'ubuntu'), ('GTK_MODULES', 'gail:atk-bridge'), ('SYSTEMD_EXEC_PID', '1309'), ('DBUS_SESSION_BUS_ADDRESS', 'unix:path=/run/user/1000/bus'), ('COLORTERM', 'truecolor'), ('LOGNAME', 'rsand'), ('_', '/usr/bin/colcon'), ('XDG_SESSION_CLASS', 'user'), ('USERNAME', 'rsand'), ('TERM', 'xterm-256color'), ('GNOME_DESKTOP_SESSION_ID', 'this-is-deprecated'), ('WINDOWPATH', '2'), ('PATH', '/opt/ros/rolling/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/snap/bin'), ('SESSION_MANAGER', 'local/ros2vm:@/tmp/.ICE-unix/1292,unix/ros2vm:/tmp/.ICE-unix/1292'), ('XDG_MENU_PREFIX', 'gnome-'), ('GNOME_TERMINAL_SCREEN', '/org/gnome/Terminal/screen/e1dcf23b_bceb_4301_b1c2_3cd0c4c62662'), ('XDG_RUNTIME_DIR', '/run/user/1000'), ('DISPLAY', ':0'), ('LANG', 'en_US.UTF-8'), ('XDG_CURRENT_DESKTOP', 'ubuntu:GNOME'), ('XMODIFIERS', '@im=ibus'), ('XDG_SESSION_DESKTOP', 'ubuntu'), ('XAUTHORITY', '/run/user/1000/gdm/Xauthority'), ('LS_COLORS', 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:'), ('GNOME_TERMINAL_SERVICE', ':1.80'), ('SSH_AGENT_LAUNCHER', 'gnome-keyring'), ('SSH_AUTH_SOCK', '/run/user/1000/keyring/ssh'), ('AMENT_PREFIX_PATH', '/opt/ros/rolling'), ('SHELL', '/bin/bash'), ('QT_ACCESSIBILITY', '1'), ('GDMSESSION', 'ubuntu'), ('LESSCLOSE', '/usr/bin/lesspipe %s %s'), ('GPG_AGENT_INFO', '/run/user/1000/gnupg/S.gpg-agent:0:1'), ('QT_IM_MODULE', 'ibus'), ('PWD', '/home/rsand/aws_mouse/build/img_recognition'), ('XDG_CONFIG_DIRS', '/etc/xdg/xdg-ubuntu:/etc/xdg'), ('XDG_DATA_DIRS', '/usr/share/ubuntu:/usr/share/gnome:/usr/local/share/:/usr/share/:/var/lib/snapd/desktop'), ('PYTHONPATH', '/opt/ros/rolling/lib/python3.10/site-packages:/opt/ros/rolling/local/lib/python3.10/dist-packages'), ('COLCON', '1'), ('VTE_VERSION', '6800')]), 'shell': False}
+[0.025889] (jetbot_description) JobProgress: {'identifier': 'jetbot_description', 'progress': 'cmake'}
+[0.025956] (jetbot_description) Command: {'cmd': ['/usr/bin/cmake', '/home/rsand/aws_mouse/src/jetbot_description', '-DCATKIN_INSTALL_INTO_PREFIX_ROOT=0', '-DCMAKE_INSTALL_PREFIX=/home/rsand/aws_mouse/install/jetbot_description'], 'cwd': '/home/rsand/aws_mouse/build/jetbot_description', 'env': OrderedDict([('LESSOPEN', '| /usr/bin/lesspipe %s'), ('USER', 'rsand'), ('XDG_SESSION_TYPE', 'x11'), ('SHLVL', '1'), ('LD_LIBRARY_PATH', '/opt/ros/rolling/opt/rviz_ogre_vendor/lib:/opt/ros/rolling/lib/x86_64-linux-gnu:/opt/ros/rolling/lib'), ('HOME', '/home/rsand'), ('OLDPWD', '/home/rsand'), ('DESKTOP_SESSION', 'ubuntu'), ('GNOME_SHELL_SESSION_MODE', 'ubuntu'), ('GTK_MODULES', 'gail:atk-bridge'), ('SYSTEMD_EXEC_PID', '1309'), ('DBUS_SESSION_BUS_ADDRESS', 'unix:path=/run/user/1000/bus'), ('COLORTERM', 'truecolor'), ('LOGNAME', 'rsand'), ('_', '/usr/bin/colcon'), ('XDG_SESSION_CLASS', 'user'), ('USERNAME', 'rsand'), ('TERM', 'xterm-256color'), ('GNOME_DESKTOP_SESSION_ID', 'this-is-deprecated'), ('WINDOWPATH', '2'), ('PATH', '/opt/ros/rolling/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/snap/bin'), ('SESSION_MANAGER', 'local/ros2vm:@/tmp/.ICE-unix/1292,unix/ros2vm:/tmp/.ICE-unix/1292'), ('XDG_MENU_PREFIX', 'gnome-'), ('GNOME_TERMINAL_SCREEN', '/org/gnome/Terminal/screen/e1dcf23b_bceb_4301_b1c2_3cd0c4c62662'), ('XDG_RUNTIME_DIR', '/run/user/1000'), ('DISPLAY', ':0'), ('LANG', 'en_US.UTF-8'), ('XDG_CURRENT_DESKTOP', 'ubuntu:GNOME'), ('XMODIFIERS', '@im=ibus'), ('XDG_SESSION_DESKTOP', 'ubuntu'), ('XAUTHORITY', '/run/user/1000/gdm/Xauthority'), ('LS_COLORS', 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:'), ('GNOME_TERMINAL_SERVICE', ':1.80'), ('SSH_AGENT_LAUNCHER', 'gnome-keyring'), ('SSH_AUTH_SOCK', '/run/user/1000/keyring/ssh'), ('AMENT_PREFIX_PATH', '/opt/ros/rolling'), ('SHELL', '/bin/bash'), ('QT_ACCESSIBILITY', '1'), ('GDMSESSION', 'ubuntu'), ('LESSCLOSE', '/usr/bin/lesspipe %s %s'), ('GPG_AGENT_INFO', '/run/user/1000/gnupg/S.gpg-agent:0:1'), ('QT_IM_MODULE', 'ibus'), ('PWD', '/home/rsand/aws_mouse/build/jetbot_description'), ('XDG_CONFIG_DIRS', '/etc/xdg/xdg-ubuntu:/etc/xdg'), ('XDG_DATA_DIRS', '/usr/share/ubuntu:/usr/share/gnome:/usr/local/share/:/usr/share/:/var/lib/snapd/desktop'), ('PYTHONPATH', '/opt/ros/rolling/lib/python3.10/site-packages:/opt/ros/rolling/local/lib/python3.10/dist-packages'), ('COLCON', '1'), ('VTE_VERSION', '6800')]), 'shell': False}
+[0.066788] (img_recognition) StdoutLine: {'line': b'-- The C compiler identification is GNU 11.3.0\n'}
+[0.086087] (jetbot_description) StdoutLine: {'line': b'-- The C compiler identification is GNU 11.3.0\n'}
+[0.098444] (-) TimerEvent: {}
+[0.116505] (img_recognition) StdoutLine: {'line': b'-- The CXX compiler identification is GNU 11.3.0\n'}
+[0.121609] (img_recognition) StdoutLine: {'line': b'-- Detecting C compiler ABI info\n'}
+[0.129035] (jetbot_description) StdoutLine: {'line': b'-- The CXX compiler identification is GNU 11.3.0\n'}
+[0.133842] (jetbot_description) StdoutLine: {'line': b'-- Detecting C compiler ABI info\n'}
+[0.184520] (img_recognition) StdoutLine: {'line': b'-- Detecting C compiler ABI info - done\n'}
+[0.191271] (img_recognition) StdoutLine: {'line': b'-- Check for working C compiler: /usr/bin/cc - skipped\n'}
+[0.191721] (img_recognition) StdoutLine: {'line': b'-- Detecting C compile features\n'}
+[0.192178] (img_recognition) StdoutLine: {'line': b'-- Detecting C compile features - done\n'}
+[0.192429] (jetbot_description) StdoutLine: {'line': b'-- Detecting C compiler ABI info - done\n'}
+[0.192520] (jetbot_description) StdoutLine: {'line': b'-- Check for working C compiler: /usr/bin/cc - skipped\n'}
+[0.192674] (jetbot_description) StdoutLine: {'line': b'-- Detecting C compile features\n'}
+[0.193011] (jetbot_description) StdoutLine: {'line': b'-- Detecting C compile features - done\n'}
+[0.195085] (img_recognition) StdoutLine: {'line': b'-- Detecting CXX compiler ABI info\n'}
+[0.195232] (jetbot_description) StdoutLine: {'line': b'-- Detecting CXX compiler ABI info\n'}
+[0.198774] (-) TimerEvent: {}
+[0.255282] (jetbot_description) StdoutLine: {'line': b'-- Detecting CXX compiler ABI info - done\n'}
+[0.256983] (img_recognition) StdoutLine: {'line': b'-- Detecting CXX compiler ABI info - done\n'}
+[0.259755] (jetbot_description) StdoutLine: {'line': b'-- Check for working CXX compiler: /usr/bin/c++ - skipped\n'}
+[0.260052] (jetbot_description) StdoutLine: {'line': b'-- Detecting CXX compile features\n'}
+[0.260475] (jetbot_description) StdoutLine: {'line': b'-- Detecting CXX compile features - done\n'}
+[0.264771] (img_recognition) StdoutLine: {'line': b'-- Check for working CXX compiler: /usr/bin/c++ - skipped\n'}
+[0.265349] (img_recognition) StdoutLine: {'line': b'-- Detecting CXX compile features\n'}
+[0.266080] (img_recognition) StdoutLine: {'line': b'-- Detecting CXX compile features - done\n'}
+[0.268594] (jetbot_description) StderrLine: {'line': b'\x1b[31mCMake Error at CMakeLists.txt:5 (find_package):\n'}
+[0.268840] (jetbot_description) StderrLine: {'line': b'  By not providing "Findcatkin.cmake" in CMAKE_MODULE_PATH this project has\n'}
+[0.268985] (jetbot_description) StderrLine: {'line': b'  asked CMake to find a package configuration file provided by "catkin", but\n'}
+[0.269142] (jetbot_description) StderrLine: {'line': b'  CMake did not find one.\n'}
+[0.269320] (jetbot_description) StderrLine: {'line': b'\n'}
+[0.269482] (jetbot_description) StderrLine: {'line': b'  Could not find a package configuration file provided by "catkin" with any\n'}
+[0.269641] (jetbot_description) StderrLine: {'line': b'  of the following names:\n'}
+[0.269785] (jetbot_description) StderrLine: {'line': b'\n'}
+[0.269933] (jetbot_description) StderrLine: {'line': b'    catkinConfig.cmake\n'}
+[0.270100] (jetbot_description) StderrLine: {'line': b'    catkin-config.cmake\n'}
+[0.270168] (jetbot_description) StderrLine: {'line': b'\n'}
+[0.270229] (jetbot_description) StderrLine: {'line': b'  Add the installation prefix of "catkin" to CMAKE_PREFIX_PATH or set\n'}
+[0.270290] (jetbot_description) StderrLine: {'line': b'  "catkin_DIR" to a directory containing one of the above files.  If "catkin"\n'}
+[0.270376] (jetbot_description) StderrLine: {'line': b'  provides a separate development package or SDK, be sure it has been\n'}
+[0.270444] (jetbot_description) StderrLine: {'line': b'  installed.\n'}
+[0.270509] (jetbot_description) StderrLine: {'line': b'\n'}
+[0.270572] (jetbot_description) StderrLine: {'line': b'\x1b[0m\n'}
+[0.270661] (jetbot_description) StdoutLine: {'line': b'-- Configuring incomplete, errors occurred!\n'}
+[0.270758] (jetbot_description) StdoutLine: {'line': b'See also "/home/rsand/aws_mouse/build/jetbot_description/CMakeFiles/CMakeOutput.log".\n'}
+[0.272759] (jetbot_description) CommandEnded: {'returncode': 1}
+[0.275931] (img_recognition) StderrLine: {'line': b'\x1b[31mCMake Error at CMakeLists.txt:10 (find_package):\n'}
+[0.276048] (img_recognition) StderrLine: {'line': b'  By not providing "Findcatkin.cmake" in CMAKE_MODULE_PATH this project has\n'}
+[0.276143] (img_recognition) StderrLine: {'line': b'  asked CMake to find a package configuration file provided by "catkin", but\n'}
+[0.276247] (img_recognition) StderrLine: {'line': b'  CMake did not find one.\n'}
+[0.276323] (img_recognition) StderrLine: {'line': b'\n'}
+[0.276397] (img_recognition) StderrLine: {'line': b'  Could not find a package configuration file provided by "catkin" with any\n'}
+[0.276476] (img_recognition) StderrLine: {'line': b'  of the following names:\n'}
+[0.276592] (img_recognition) StderrLine: {'line': b'\n'}
+[0.276676] (img_recognition) StderrLine: {'line': b'    catkinConfig.cmake\n'}
+[0.276748] (img_recognition) StderrLine: {'line': b'    catkin-config.cmake\n'}
+[0.276833] (img_recognition) StderrLine: {'line': b'\n'}
+[0.276935] (img_recognition) StderrLine: {'line': b'  Add the installation prefix of "catkin" to CMAKE_PREFIX_PATH or set\n'}
+[0.277017] (img_recognition) StderrLine: {'line': b'  "catkin_DIR" to a directory containing one of the above files.  If "catkin"\n'}
+[0.277087] (img_recognition) StderrLine: {'line': b'  provides a separate development package or SDK, be sure it has been\n'}
+[0.277157] (img_recognition) StderrLine: {'line': b'  installed.\n'}
+[0.277239] (img_recognition) StderrLine: {'line': b'\n'}
+[0.277338] (img_recognition) StderrLine: {'line': b'\x1b[0m\n'}
+[0.277515] (img_recognition) StdoutLine: {'line': b'-- Configuring incomplete, errors occurred!\n'}
+[0.277690] (img_recognition) StdoutLine: {'line': b'See also "/home/rsand/aws_mouse/build/img_recognition/CMakeFiles/CMakeOutput.log".\n'}
+[0.280478] (img_recognition) CommandEnded: {'returncode': 1}
+[0.296350] (jetbot_description) JobEnded: {'identifier': 'jetbot_description', 'rc': 1}
+[0.297406] (img_recognition) JobEnded: {'identifier': 'img_recognition', 'rc': 'SIGINT'}
+[0.299220] (-) TimerEvent: {}
+[0.308417] (jetbot_navigation) JobSkipped: {'identifier': 'jetbot_navigation'}
+[0.308450] (jetbot_slam) JobSkipped: {'identifier': 'jetbot_slam'}
+[0.308466] (maze_demo) JobSkipped: {'identifier': 'maze_demo'}
+[0.308480] (maze_world) JobSkipped: {'identifier': 'maze_world'}
+[0.308507] (mouse_smach) JobSkipped: {'identifier': 'mouse_smach'}
+[0.309066] (pid_tune) JobSkipped: {'identifier': 'pid_tune'}
+[0.309097] (-) EventReactorShutdown: {}
