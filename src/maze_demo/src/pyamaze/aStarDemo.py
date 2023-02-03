@@ -1,5 +1,5 @@
 from pyamaze import maze,agent,COLOR,textLabel
-from Queue import PriorityQueue
+from queue import PriorityQueue
 def h(cell1, cell2):
     x1, y1 = cell1
     x2, y2 = cell2
@@ -8,16 +8,16 @@ def h(cell1, cell2):
 def aStar(m,start=None):
     if start is None:
         start=(m.rows,m.cols)
-    open = PriorityQueue()
-    open.put((h(start, m._goal), h(start, m._goal), start))
+    openQueue = PriorityQueue()
+    openQueue.put((h(start, m._goal), h(start, m._goal), start))
     aPath = {}
     g_score = {row: float("inf") for row in m.grid}
     g_score[start] = 0
     f_score = {row: float("inf") for row in m.grid}
     f_score[start] = h(start, m._goal)
     searchPath=[start]
-    while not open.empty():
-        currCell = open.get()[2]
+    while not openQueue.empty():
+        currCell = openQueue.get()[2]
         searchPath.append(currCell)
         if currCell == m._goal:
             break        
@@ -39,7 +39,7 @@ def aStar(m,start=None):
                     aPath[childCell] = currCell
                     g_score[childCell] = temp_g_score
                     f_score[childCell] = temp_g_score + h(childCell, m._goal)
-                    open.put((f_score[childCell], h(childCell, m._goal), childCell))
+                    openQueue.put((f_score[childCell], h(childCell, m._goal), childCell))
 
 
     fwdPath={}
@@ -58,12 +58,12 @@ if __name__=='__main__':
     start = (4,2) # specify the start location
     # using A-star to seach a path from start loc to goal loc
     searchPath,aPath,fwdPath=aStar(m, start)
- #   print(fwdPath)
- #   a=agent(m,footprints=True,color=COLOR.blue,filled=True)
- #   b=agent(m,1,1,footprints=True,color=COLOR.yellow,filled=True,goal=(m.rows,m.cols))
+#    print(fwdPath)
+#    a=agent(m,footprints=True,color=COLOR.blue,filled=True)
+#    b=agent(m,1,1,footprints=True,color=COLOR.yellow,filled=True,goal=(m.rows,m.cols))
     # must specify x and y so it will draw the start location in the right place
     c=agent(m,x=start[0], y=start[1], footprints=True,filled=False,color=COLOR.red)
- #   c.position = start
+#    c.position = start
 
 #    m.tracePath({a:searchPath},delay=300)
 #    m.tracePath({b:aPath},delay=300)

@@ -23,10 +23,9 @@ SOFTWARE.
 """
 
 import random,datetime,csv,os
-from Tkinter import *
+from tkinter import *
 from enum import Enum
 from collections import deque
-from sys import platform
 
 class COLOR(Enum):
     '''
@@ -54,7 +53,7 @@ class agent:
     Or they can be the physical agents (like robots)
     They can have two shapes (square or arrow)
     '''
-    def __init__(self,parentMaze,x=None,y=None,shape='square',goal=None,filled=False,footprints=False,color=COLOR.blue):
+    def __init__(self,parentMaze,x=None,y=None,shape='square',goal=None,filled=False,footprints=False,color:COLOR=COLOR.blue):
         '''
         parentmaze-->  The maze on which agent is placed.
         x,y-->  Position of the agent i.e. cell inside which agent will be placed
@@ -83,7 +82,7 @@ class agent:
             if(color in COLOR.__members__):
                 self.color=COLOR[color]
             else:
-                raise ValueError("{} is not a valid COLOR!".format(color))
+                raise ValueError(f'{color} is not a valid COLOR!')
         self.filled=filled
         self.shape=shape
         self._orient=0
@@ -137,7 +136,7 @@ class agent:
                     if self.filled:
                         lll=self._parentMaze._canvas.coords(self._head)
                         oldcell=(round(((lll[1]-26)/self._parentMaze._cell_width)+1),round(((lll[0]-26)/self._parentMaze._cell_width)+1))
-                        self._parentMaze._redrawCell(f(*oldcell),self._parentMaze.theme)
+                        self._parentMaze._redrawCell(*oldcell,self._parentMaze.theme)
                 else:
                     self._parentMaze._canvas.itemconfig(self._head, fill=self.color.value[1])#,outline='gray70')
                     self._parentMaze._canvas.tag_raise(self._head)
@@ -208,13 +207,11 @@ class agent:
         p2CW=(p2[1],-p2[0])
         p1=p1CW[0]+cent[0],p1CW[1]+cent[1]
         p2=p2CW[0]+cent[0],p2CW[1]+cent[1]
-        self._coord=(f(*p1),f(*p2))  
+        self._coord=(*p1,*p2)  
         self._parentMaze._canvas.coords(self._head,*self._coord)
         self._orient=(self._orient-1)%4
  
-    def f(*var1):
-        return var1
-       
+        
     def _RCW(self):
         '''
         To Rotate the agent in Clock Wise direction
@@ -231,7 +228,7 @@ class agent:
         p2CW=(-p2[1],p2[0])
         p1=p1CW[0]+cent[0],p1CW[1]+cent[1]
         p2=p2CW[0]+cent[0],p2CW[1]+cent[1]
-        self._coord=(f(*p1),f(*p2))  
+        self._coord=(*p1,*p2)  
         self._parentMaze._canvas.coords(self._head,*self._coord)
         self._orient=(self._orient+1)%4
 
@@ -272,11 +269,11 @@ class textLabel:
     @value.setter
     def value(self,v):
         self._value=v
-        self._var.set("{} : {}".format(self.title,v))
+        self._var.set(f'{self.title} : {v}')
     def drawLabel(self):
         self._var = StringVar()
         self.lab = Label(self._parentMaze._canvas, textvariable=self._var, bg="white", fg="black",font=('Helvetica bold',12),relief=RIDGE)
-        self._var.set("{} : {}".format(self.title, self.value))
+        self._var.set(f'{self.title} : {self.value}')
         self.lab.pack(expand = True,side=LEFT,anchor=NW)
 
 class maze:
@@ -314,16 +311,6 @@ class maze:
         self.markCells=[]
 
     @property
-    def goal(self):
-        return self._goal
-    @goal.setter
-    def goal(self,v):
-        agent(self,*self._goal,shape='square',filled=True,color=COLOR.dark)
-        self._goal=v
-        agent(self,*self._goal,shape='square',filled=True,color=COLOR.green)
-        #self._var.set(f'{self.title} : {v}')
-
-    @property
     def grid(self):
         return self._grid
     @grid.setter        
@@ -357,7 +344,7 @@ class maze:
         if x+1<=self.rows:
             self.maze_map[x+1,y]['N']=1
     
-    def CreateMaze(self,x=1,y=1,pattern=None,loopPercent=0,saveMaze=False,loadMaze=None,theme=COLOR.dark):
+    def CreateMaze(self,x=1,y=1,pattern=None,loopPercent=0,saveMaze=False,loadMaze=None,theme:COLOR=COLOR.dark):
         '''
         One very important function to create a Random Maze
         pattern-->  It can be 'v' for vertical or 'h' for horizontal
@@ -378,7 +365,7 @@ class maze:
             if(theme in COLOR.__members__):
                 self.theme=COLOR[theme]
             else:
-                raise ValueError("{} is not a valid theme COLOR!".format(theme))
+                raise ValueError(f'{theme} is not a valid theme COLOR!')
         def blockedNeighbours(cell):
             n=[]
             for d in self.maze_map[cell].keys():
@@ -613,7 +600,7 @@ class maze:
         agent(self,*self._goal,shape='square',filled=True,color=COLOR.green)
         if saveMaze:
             dt_string = datetime.datetime.now().strftime("%Y-%m-%d--%H-%M-%S")
-            with open("maze--{}.csv".format(dt_string),'w',newline='') as f:
+            with open(f'maze--{dt_string}.csv','w',newline='') as f:
                 writer=csv.writer(f)
                 writer.writerow(['  cell  ','E','W','N','S'])
                 for k,v in self.maze_map.items():
@@ -632,15 +619,12 @@ class maze:
         
         self._LabWidth=26 # Space from the top for Labels
         self._win=Tk()
-        if (platform == "linux" or platform == "linux2"):
-            self._win.attributes('-zoomed', True)
-        elif (platform == "darwin" or platform == "win32"):
-            self._win.state('zoomed')
+        self._win.state('zoomed')
         self._win.title('PYTHON MAZE WORLD by Learning Orbis')
         
         scr_width=self._win.winfo_screenwidth()
         scr_height=self._win.winfo_screenheight()
-        self._win.geometry("{}x{}+0+0".format(scr_width, scr_height))
+        self._win.geometry(f"{scr_width}x{scr_height}+0+0")
         self._canvas = Canvas(width=scr_width, height=scr_height, bg=theme.value[0]) # 0,0 is top left corner
         self._canvas.pack(expand=YES, fill=BOTH)
         # Some calculations for calculating the width of the maze cell
@@ -784,12 +768,8 @@ class maze:
                         a.x,a.y=p[(a.x,a.y)]
                 else:
                     del p[(a.x,a.y)]
-            else:
-                if (a.x, a.y) in p.keys():
-                    a.x,a.y=p[(a.x,a.y)]
-                else:
-                    return
-                #a.x,a.y=p[(a.x,a.y)]
+            else:    
+                a.x,a.y=p[(a.x,a.y)]
         # If path is provided as String
         if (type(p)==str):
             if(len(p)==0):

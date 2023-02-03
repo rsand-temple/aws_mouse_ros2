@@ -1,10 +1,8 @@
 #!/usr/bin/env python
-import sys
-import os, sys, argparse, errno, yaml, time, datetime
+import yaml, time
 import rospy, rospkg
 import math
 import numpy as np
-from math import cos, sin
 from geometry_msgs.msg import Twist
 from geometry_msgs.msg import Point
 from sensor_msgs.msg import Imu
@@ -15,9 +13,6 @@ from std_msgs.msg import Float32,String
 from std_msgs.msg import Float64
 from tf.transformations import euler_from_quaternion, quaternion_from_euler
 from img_recognition.msg import Prediction
-from rospy_message_converter import message_converter, json_message_converter
-
-
 
 foundHeading = False
 current_heading =0
@@ -61,7 +56,7 @@ class Micromouse_Node(object):
         self.sub_msg = rospy.Subscriber("/scan", LaserScan, self.calculate_lasers_range, queue_size=1)        
         # self.sub_imumsg = rospy.Subscriber("/imu", Imu, self.clbk_imu, queue_size=1)
         self.sub_odommsg = rospy.Subscriber("/odom", Odometry, self.odom_callback)
-    	#subscribe to predication topic
+        #subscribe to predication topic
         rospy.Subscriber("/prediction", Prediction, self.clbk_prediction)
 
         self._mved_distance = Float64()
@@ -73,10 +68,10 @@ class Micromouse_Node(object):
         # configure Publisher
         self.pub_msg = rospy.Publisher('/cmd_vel', Twist, queue_size=1)
         self.laser_sensors = {'left': 0, 'frontleft': 0, 'front': 0, 'frontright': 0, 'right': 0}
-	
-	# self.laser_pub = rospy.Publisher('/laser', Vector3, queue_size = 1)
 
-	 # configure Publisher for distance
+        # self.laser_pub = rospy.Publisher('/laser', Vector3, queue_size = 1)
+
+        # configure Publisher for distance
         self.distance_msg=rospy.Publisher('/distance', String, queue_size=1)
         
 
@@ -88,96 +83,96 @@ class Micromouse_Node(object):
 
     def move_forward(self, distance=0.3, DEBUG = False):
     
-    	rate = rospy.Rate(30)
-    	
-    	self._mved_distance.data = 0.0
-    	self.get_init_position()
-    	
-    	if distance < 0.0:
-    	    mv_forward = False
-    	else:
-    	    mv_forward = True
-    	vel_msg = Twist()
-    	    	      
-    	while not rospy.is_shutdown():
+        rate = rospy.Rate(30)
+
+        self._mved_distance.data = 0.0
+        self.get_init_position()
+
+        if distance < 0.0:
+            mv_forward = False
+        else:
+            mv_forward = True
+        vel_msg = Twist()
+      
+        while not rospy.is_shutdown():
             if self.laser_sensors is not None:
 
-            	vel_msg.linear.x =0.1
-            	if (distance<0):               
-            	   vel_msg.linear.x =-0.1
-            	self.pub_msg.publish(vel_msg)
+                vel_msg.linear.x =0.1
+                if (distance<0):               
+                    vel_msg.linear.x =-0.1
+                self.pub_msg.publish(vel_msg)
 
-            	if (self._mved_distance.data >abs(distance)):
-            	    break
-            	rate.sleep()
+                if (self._mved_distance.data >abs(distance)):
+                    break
+                rate.sleep()
 
-    	vel_msg.linear.x = 0
-    	self.pub_msg.publish(vel_msg)
-    	if (DEBUG):
-    	    print("distance travelled {:.3f}".format(self._mved_distance.data))
-    	    
-    	return self._mved_distance.data
+        vel_msg.linear.x = 0
+        self.pub_msg.publish(vel_msg)
+        if (DEBUG):
+            print("distance travelled {:.3f}".format(self._mved_distance.data))
+            
+        return self._mved_distance.data
 
     def print_walldistance(self, DEBUG = False, follow='no wall'):
-    	if (DEBUG):
-    	    print("lft-{:.3f},rgt-{:.3f}, frt-{:.3f}, {}".format(self.laser_sensors['left'], self.laser_sensors['right'],self.laser_sensors['front'], follow))
+        if (DEBUG):
+            print("lft-{:.3f},rgt-{:.3f}, frt-{:.3f}, {}".format(self.laser_sensors['left'], self.laser_sensors['right'],self.laser_sensors['front'], follow))
 
     def move_onecell(self, distance=0.3, kp = 111, DEBUG = False):
     
-    	rate = rospy.Rate(30)
-    	
-    	self._mved_distance.data = 0.0
-    	self.get_init_position()
-    	
-    	if distance < 0.0:
-    	    mv_forward = False
-    	else:
-    	    mv_forward = True
-    	      
-    	while not rospy.is_shutdown():
+        rate = rospy.Rate(30)
+
+        self._mved_distance.data = 0.0
+        self.get_init_position()
+
+        if distance < 0.0:
+            mv_forward = False
+        else:
+            mv_forward = True
+      
+        while not rospy.is_shutdown():
             if self.laser_sensors is not None:
-            	vel_msgl, leftd = self.follow_left_wall(mv_forward, desired_dist = 0.13, kp = kp)
-            	vel_msgr, rightd = self.follow_right_wall(mv_forward, desired_dist = 0.13, kp = kp)
-            	vel_msgc, centerd = self.follow_both_wall(mv_forward, desired_dist = 0.13, kp = kp)
-            	
-		# no wall on both side
-            	follow=''
-            	if ((self.laser_sensors['left']>0.3 and self.laser_sensors['right']>0.3) or (self.laser_sensors['frontleft']>0.3 and self.laser_sensors['frontright']>0.3)): # no wall on both side
+                vel_msgl, leftd = self.follow_left_wall(mv_forward, desired_dist = 0.13, kp = kp)
+                vel_msgr, rightd = self.follow_right_wall(mv_forward, desired_dist = 0.13, kp = kp)
+                vel_msgc, centerd = self.follow_both_wall(mv_forward, desired_dist = 0.13, kp = kp)
+            
+                # no wall on both side
+                follow=''
+                if ((self.laser_sensors['left']>0.3 and self.laser_sensors['right']>0.3) or (self.laser_sensors['frontleft']>0.3 and self.laser_sensors['frontright']>0.3)): # no wall on both side
                     vel_msg = vel_msgl
                     vel_msg.angular.z =0 # no rotation
                     follow = 'no wall'
 #                    print("no wall")
-            	else:
-		    # if left side wall is closer, follow left
-            	    if (rightd > leftd) and (self.laser_sensors['frontleft']>0.07):  # follow left
+                else:
+                    # if left side wall is closer, follow left
+                    if (rightd > leftd) and (self.laser_sensors['frontleft']>0.07):  # follow left
                         vel_msg = vel_msgl
                         follow = 'left wall'
-            	    elif (rightd > leftd) and (self.laser_sensors['frontleft']<0.07):  # too close to the wall so follow center
+                    elif (rightd > leftd) and (self.laser_sensors['frontleft']<0.07):  # too close to the wall so follow center
                         vel_msg = vel_msgc
                         follow = 'center wall'
-            	    elif (rightd < leftd) and (self.laser_sensors['frontright']>0.07):  # follow right
+                    elif (rightd < leftd) and (self.laser_sensors['frontright']>0.07):  # follow right
                         vel_msg = vel_msgr
                         follow = 'right wall'
-            	    else:
+                    else:
                         vel_msg = vel_msgc
                         follow = 'center wall'
 
  
 
-            	self.pub_msg.publish(vel_msg)
-            	self.print_walldistance(True, follow)
-            	if (self.laser_sensors['front']<wall_distance_forward):
-            	    break
-            	if (self._mved_distance.data >abs(distance)):
-            	    break
-            	rate.sleep()
-    	vel_msg = Twist()
-    	vel_msg.linear.x = 0
-    	self.pub_msg.publish(vel_msg)
-    	if (DEBUG):
-    	    print("distance travelled {:.3f}".format(self._mved_distance.data))
-    	    
-    	return self._mved_distance.data
+                self.pub_msg.publish(vel_msg)
+                self.print_walldistance(True, follow)
+                if (self.laser_sensors['front']<wall_distance_forward):
+                    break
+                if (self._mved_distance.data >abs(distance)):
+                    break
+                rate.sleep()
+        vel_msg = Twist()
+        vel_msg.linear.x = 0
+        self.pub_msg.publish(vel_msg)
+        if (DEBUG):
+            print("distance travelled {:.3f}".format(self._mved_distance.data))
+        
+        return self._mved_distance.data
 
     def clbk_prediction(self, data):
         while (not rospy.is_shutdown()) and (data is None):
@@ -231,7 +226,7 @@ class Micromouse_Node(object):
         error = CD - desired_dist
 
         msg = Twist()
-        integ = 0
+        nteg = 0
         diff = 0
         output = self.clamp(-sign*kp*error, -1, 1) # - ki*integ - kd*diff and limited it between -1, 1
         msg.linear.x = AC
@@ -274,11 +269,11 @@ class Micromouse_Node(object):
         ABangle = -sign*math.atan2( a * math.cos(swing) - b , a * math.sin(swing))
         AB = b * math.cos(ABangle)
 
-	#https://github.com/mlab-upenn/f1tenthpublic/blob/master/f1_tenth_sim/race/scripts/levineDemo.py
-	#alpha = -math.atan((a*math.cos(swing)-b)/(a*math.sin(swing)))
-	#print "Alpha left",math.degrees(alpha)
-	#curr_dist = b*math.cos(alpha)
-	#future_dist = curr_dist-car_length*math.sin(alpha)
+    #https://github.com/mlab-upenn/f1tenthpublic/blob/master/f1_tenth_sim/race/scripts/levineDemo.py
+    #alpha = -math.atan((a*math.cos(swing)-b)/(a*math.sin(swing)))
+    #print "Alpha left",math.degrees(alpha)
+    #curr_dist = b*math.cos(alpha)
+    #future_dist = curr_dist-car_length*math.sin(alpha)
 
 
         # AC = 0.2     # how much the car moves in one time shot or linear.x in twist message
@@ -349,7 +344,7 @@ class Micromouse_Node(object):
         msg.linear.x = AC
 #        print("output->:{:.3f} and left distance->: {:.3f}, current right distance->: {:.3f}".format(output, self.laser_sensors['l'], self.laser_sensors['r']))
         msg.angular.z =  output
- #       print("turning angle {:.3f}".format(output))
+#        print("turning angle {:.3f}".format(output))
 
         return msg, (curr_dist2-curr_dist1)
 
@@ -457,8 +452,8 @@ class Micromouse_Node(object):
         # self.yaw_imu = self.pi_to_pi(self.yaw_imu)
         
         #if (not foundHeading):
-         #   current_heading = self.yaw_imu
-          #  foundHeading = True
+        #   current_heading = self.yaw_imu
+        #  foundHeading = True
         #Kp=38
         #rotation_imu =  Kp*(current_heading-self.yaw_imu)
         
@@ -523,39 +518,38 @@ class Micromouse_Node(object):
             self.turnleft(target, DEBUG)
 
     def turnleft(self, target=90, DEBUG=False):   
-    	global foundHeading, current_heading
-    	import math 
-    	current_angle = 0
-    	rate = rospy.Rate(20)
-    	kp=0.5
-    	
-    	target_rad = self.pi_to_pi(np.radians(target)+current_heading)  # (target* math.pi/180)   # current heading add 90 degree
-    	cnt=0
-    	while not rospy.is_shutdown():
+        global foundHeading, current_heading
+        current_angle = 0
+        rate = rospy.Rate(20)
+        kp=0.5
+    
+        target_rad = self.pi_to_pi(np.radians(target)+current_heading)  # (target* math.pi/180)   # current heading add 90 degree
+        cnt=0
+        while not rospy.is_shutdown():
             if (abs(target_rad-self.yaw_odom)<0.01):
-             	foundHeading = False   # updated heading after the rotation
-             	break;
+                foundHeading = False   # updated heading after the rotation
+                break;
             if (self.laser_sensors['frontright']<0.08 or self.laser_sensors['frontleft']<0.08):
                 rospy.loginfo('Too close to wall, cannot rotate anymore')
             else:
-             	vel_msg = Twist()
-             	vel_msg.angular.z = kp *self.pi_to_pi(target_rad -self.yaw_odom)
-             	self.pub_msg.publish(vel_msg)
-             	cnt = cnt + 1
-             	if (DEBUG and cnt%100==0):             	
-             	    print('>pose[{:.3f} ]>target_heading {:.3f}'.format(self.yaw_odom, target_rad))
-             	
+                vel_msg = Twist()
+                vel_msg.angular.z = kp *self.pi_to_pi(target_rad -self.yaw_odom)
+                self.pub_msg.publish(vel_msg)
+                cnt = cnt + 1
+                if (DEBUG and cnt%100==0):             	
+                    print('>pose[{:.3f} ]>target_heading {:.3f}'.format(self.yaw_odom, target_rad))
+
             #self.prev_yaw_imu=self.yaw_imu
             rate.sleep()
             
-    	if (DEBUG):
-    	    print(current_angle, self.laser_sensors['front'])
+        if (DEBUG):
+            print(current_angle, self.laser_sensors['front'])
 
-    	vel_msg = Twist()
-    	vel_msg.angular.z = 0
-    	self.pub_msg.publish(vel_msg)
-    	rate.sleep()
-    	
+        vel_msg = Twist()
+        vel_msg.angular.z = 0
+        self.pub_msg.publish(vel_msg)
+        rate.sleep()
+    
 
     def on_shutdown(self): 
         rospy.loginfo("[{}] Close.".format(self.node_name))
@@ -576,6 +570,4 @@ if __name__ == "__main__" :
   
     micromouse_node = Micromouse_Node()
     rospy.on_shutdown(micromouse_node.on_shutdown)   
-    rospy.spin()    
-    
-    
+    rospy.spin()
