@@ -1,10 +1,7 @@
 from torchvision import transforms
-from torchvision.transforms import ToTensor
-from torch.utils.data.dataloader import DataLoader
 import torch.nn as nn
 import torch.nn.functional as F
 import torchvision
-import torchvision.transforms.functional as TF
 
 
 transformer = torchvision.transforms.Compose(

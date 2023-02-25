@@ -1,17 +1,15 @@
-#!/usr/bin/env python
-import os, sys, argparse, errno, yaml, time, datetime
-import rospy, rospkg
+import yaml, time
+import rclpy
 import torch, torchvision, cv2
 import numpy as np
 from cv_bridge import CvBridge, CvBridgeError
-from sensor_msgs.msg import CompressedImage, Image
+from sensor_msgs.msg import Image
 from img_recognition.msg import Inference
 from img_recognition.msg import Prediction
 import custommodel
 import pretrianedmodel
 from custommodel import *
 from pretrianedmodel import *
-#from jetcam_ros.utils import bgr8_to_jpeg
 
 #import cv2
 
@@ -21,10 +19,10 @@ from pretrianedmodel import *
 class Inference_Model_Node(object):
     def __init__(self):
         self.package = "img_recognition"
-        self.node_name = rospy.get_name()
+        self.node_name = rclpy.get_name()
         self.veh_name = self.node_name.split("/")[1]
-        self.start = rospy.wait_for_message("/camera/rgb/image_raw", Image)
-        rospy.loginfo("[{}]  Initializing img_model_inference.py......".format(self.node_name))
+        self.start = rclpy.wait_for_message("/camera/rgb/image_raw", Image)
+        rclpy.loginfo("[{}]  Initializing img_model_inference.py......".format(self.node_name))
 
         # set/get ros param
         self.model_name  = self.setup_parameter("~model_pth","best.pth")
@@ -53,18 +51,18 @@ class Inference_Model_Node(object):
 
             # configure subscriber
             self.first_sub = True
-            self.sub_msg = rospy.Subscriber("/camera/rgb/image_raw", Image, self.convert_image_to_cv2,queue_size=1)
+            self.sub_msg = rclpy.Subscriber("/camera/rgb/image_raw", Image, self.convert_image_to_cv2,queue_size=1)
 
             # configure Publisher
-            self.pub_msg = rospy.Publisher("/inference", Inference, queue_size=1)
-            self.pub_pmsg = rospy.Publisher("/prediction", Prediction, queue_size=1)
+            self.pub_msg = rclpy.Publisher("/inference", Inference, queue_size=1)
+            self.pub_pmsg = rclpy.Publisher("/prediction", Prediction, queue_size=1)
     
     def check_model_exist(self, name):
         if not name in self.recording.keys():
             
-            rospy.logerr("[{}] does not exist in folder [model]. Please check your model_pth in [{}].".format(name,self.getFilePath(name="inference_model.yaml", folder="param") ))
-            rospy.logerr("There are model_pth you can use below:")
-            rospy.logerr(list(self.recording.keys()))
+            rclpy.logerr("[{}] does not exist in folder [model]. Please check your model_pth in [{}].".format(name,self.getFilePath(name="inference_model.yaml", folder="param") ))
+            rclpy.logerr("There are model_pth you can use below:")
+            rclpy.logerr(list(self.recording.keys()))
             return False
         return True
 
@@ -77,8 +75,8 @@ class Inference_Model_Node(object):
                      ]
 
         if model in model_list:
-            rospy.logwarn("[{0}] [{1}]] use [{2}]. Need some time to load model [{1}]...".format(self.node_name, self.model_name, model))
-            start_time = rospy.get_time()
+            rclpy.logwarn("[{0}] [{1}]] use [{2}]. Need some time to load model [{1}]...".format(self.node_name, self.model_name, model))
+            start_time = rclpy.get_time()
             self.modelname = model
             if model == "custom":
                 self.model = SimpleNet(num_classes=5)
@@ -121,27 +119,27 @@ class Inference_Model_Node(object):
             else:
                 self.model.load_state_dict(torch.load(model_pth))
                 
-            interval = rospy.get_time() - start_time
-            rospy.loginfo("[{}] Done with loading model! Use {:.2f} seconds.".format(self.node_name, interval))
-            rospy.loginfo("[{}] There are {} objects you want to recognize.".format(self.node_name, kind_of_classifier))
+            interval = rclpy.get_time() - start_time
+            rclpy.loginfo("[{}] Done with loading model! Use {:.2f} seconds.".format(self.node_name, interval))
+            rclpy.loginfo("[{}] There are {} objects you want to recognize.".format(self.node_name, kind_of_classifier))
             return self.model
         else:
-            rospy.loginfo("[{}] Your classifier is wrong. Please check out model struct!".format(self.node_name))
+            rclpy.loginfo("[{}] Your classifier is wrong. Please check out model struct!".format(self.node_name))
             self.on_shutdown()
 
     def cuda(self,use=False):
         if use == True:
-            rospy.loginfo("[{}] Using cuda! Need some time to start...".format(self.node_name))
+            rclpy.loginfo("[{}] Using cuda! Need some time to start...".format(self.node_name))
             self.device = torch.device('cuda')
-            start_time = rospy.get_time()
+            start_time = rclpy.get_time()
             self.model = self.model.to(self.device)
-            interval = rospy.get_time() - start_time
-            rospy.loginfo("[{}] Done with starting! Can use cuda now! Use {:.2f} seconds to start.".format(self.node_name, interval)) 
+            interval = rclpy.get_time() - start_time
+            rclpy.loginfo("[{}] Done with starting! Can use cuda now! Use {:.2f} seconds to start.".format(self.node_name, interval)) 
         else:
-            rospy.loginfo("[{}] Do not use cuda!".format(self.node_name))
+            rclpy.loginfo("[{}] Do not use cuda!".format(self.node_name))
 
     def getFilePath(self,name ,folder="image"):
-        rospack = rospkg.RosPack()
+        rospack = rclpy.RosPack()
         return rospack.get_path(self.package) + "/" + folder + "/" + name  
 
 
@@ -181,13 +179,13 @@ class Inference_Model_Node(object):
         return img   
 
     def inference(self, img, labels):
-        start_time = rospy.get_time()
+        start_time = rclpy.get_time()
         if self.first_sub == True:
-            rospy.loginfo("[{}] Deploy model to gpu. Please wait...".format(self.node_name))
+            rclpy.loginfo("[{}] Deploy model to gpu. Please wait...".format(self.node_name))
         img = self.preprocess(img)
         predict = self.model(img)
         if self.first_sub == True:
-            interval = rospy.get_time() - start_time
+            interval = rclpy.get_time() - start_time
             self.inference_information(interval)
             self.first_sub = False
         # we apply the 'softmax' function to normalize the output vector so it sums to 1 (which makes ti a probability distribution)
@@ -209,28 +207,28 @@ class Inference_Model_Node(object):
         time.sleep(0.001)
 
     def inference_information(self, interval):
-        rospy.loginfo("[{}] Deployment complete! Use {:.2f} seconds.".format(self.node_name, interval))
-        rospy.loginfo("[{}] Start to recognitize image! Theer are {} object you can recognitize: {}".format(self.node_name, len(self.labels), self.labels))
-        rospy.loginfo("[{}] You can listen the topic to see how much the confidence about object: {}".format(self.node_name, self.node_name + "/inference"))
-        rospy.loginfo("[{}] More information about {} :\n{}".format(self.node_name, self.model_name, self.recording[self.model_name]))
+        rclpy.loginfo("[{}] Deployment complete! Use {:.2f} seconds.".format(self.node_name, interval))
+        rclpy.loginfo("[{}] Start to recognitize image! Theer are {} object you can recognitize: {}".format(self.node_name, len(self.labels), self.labels))
+        rclpy.loginfo("[{}] You can listen the topic to see how much the confidence about object: {}".format(self.node_name, self.node_name + "/inference"))
+        rclpy.loginfo("[{}] More information about {} :\n{}".format(self.node_name, self.model_name, self.recording[self.model_name]))
 
 
     def on_shutdown(self): 
-        rospy.loginfo("[{}] Close.".format(self.node_name))
-        rospy.loginfo("[{}] shutdown.".format(self.node_name))
-        rospy.sleep(1)
-        rospy.is_shutdown=True
+        rclpy.loginfo("[{}] Close.".format(self.node_name))
+        rclpy.loginfo("[{}] shutdown.".format(self.node_name))
+        rclpy.sleep(1)
+        rclpy.is_shutdown=True
 
     def setup_parameter(self, param_name, default_value):
-        value = rospy.get_param(param_name, default_value)
+        value = rclpy.get_param(param_name, default_value)
         # Write to parameter server for transparency
-        rospy.set_param(param_name, value)
-        rospy.loginfo("[%s] %s = %s " % (self.node_name, param_name, value))
+        rclpy.set_param(param_name, value)
+        rclpy.loginfo("[%s] %s = %s " % (self.node_name, param_name, value))
         return value
 
 
 if __name__ == "__main__" :
-    rospy.init_node("img_model_inference", anonymous=False)
+    rclpy.init_node("img_model_inference", anonymous=False)
     inference_model_node = Inference_Model_Node()
-    rospy.on_shutdown(inference_model_node.on_shutdown)   
-    rospy.spin()
+    rclpy.on_shutdown(inference_model_node.on_shutdown)   
+    rclpy.spin()

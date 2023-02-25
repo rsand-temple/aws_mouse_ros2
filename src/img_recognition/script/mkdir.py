@@ -1,8 +1,4 @@
-#!/usr/bin/env python3
-
-import os , sys , argparse ,errno , yaml
-import rospy
-
+import os,argparse,errno,yaml
 
 class mkdir(object):
     

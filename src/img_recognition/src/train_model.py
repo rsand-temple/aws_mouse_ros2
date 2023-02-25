@@ -1,9 +1,6 @@
-#!/usr/bin/env python
-
-import os, sys, argparse, errno, yaml, time, datetime
-import cv2, numpy 
-import rospy, rospkg, threading
-import torch, torchvision
+import os, sys, yaml, datetime
+import rclpy, rospkg
+import torch
 import torch.optim as optim
 import torch.nn.functional as function
 import torchvision.datasets as datasets
@@ -20,20 +17,20 @@ class Train_Model_Node(object):
 
     def __init__(self):
         self.package = "img_recognition"
-        self.node_name = rospy.get_name()
+        self.node_name = rclpy.get_name()
         self.veh_name = self.node_name.split("/")[1]
-        rospy.loginfo("{}  Initializing train_model.py......".format(self.node_name))
+        rclpy.loginfo("{}  Initializing train_model.py......".format(self.node_name))
 
         # set/get ros param
-        self.loader_batch_size  = rospy.get_param("~loader/batch_size",8)
-        self.loader_shuffle = rospy.get_param("~loader/shuffle",True)
-        self.loader_num_workers = rospy.get_param("~loader/num_workers",0)
-        self.use_cuda = rospy.get_param("~train/use_cuda",True)
-        self.param_model = rospy.get_param("~train/model","alexnet")
-        self.train_save_model_name  = rospy.get_param("~train/save_model_name","best")
-        self.train_epochs = rospy.get_param("~train/epochs",30)
-        self.train_lr = rospy.get_param("~train/learning_rate",0.001)
-        self.train_momentum = rospy.get_param("~train/momentum",0.9)
+        self.loader_batch_size  = rclpy.get_param("~loader/batch_size",8)
+        self.loader_shuffle = rclpy.get_param("~loader/shuffle",True)
+        self.loader_num_workers = rclpy.get_param("~loader/num_workers",0)
+        self.use_cuda = rclpy.get_param("~train/use_cuda",True)
+        self.param_model = rclpy.get_param("~train/model","alexnet")
+        self.train_save_model_name  = rclpy.get_param("~train/save_model_name","best")
+        self.train_epochs = rclpy.get_param("~train/epochs",30)
+        self.train_lr = rclpy.get_param("~train/learning_rate",0.001)
+        self.train_momentum = rclpy.get_param("~train/momentum",0.9)
         
         # set local param
         self.yaml_dict = {}
@@ -79,8 +76,8 @@ class Train_Model_Node(object):
                      ]
 
         if model in model_list:
-            rospy.loginfo("You use model [{}]. Need some time to load model...".format(model))
-            start_time = rospy.get_time()
+            rclpy.loginfo("You use model [{}]. Need some time to load model...".format(model))
+            start_time = rclpy.get_time()
             if model == "resnet18":
                 self.model = models.resnet18(pretrained=param_pretrained)
                 self.model.fc = torch.nn.Linear(512,kind_of_classifier)
@@ -112,32 +109,32 @@ class Train_Model_Node(object):
                 self.model = models.wide_resnet50_2(pretrained=param_pretrained)
             elif model == "mnasnet":
                 self.model = models.mnasnet1_0(pretrained=param_pretrained)
-            interval = rospy.get_time() - start_time
-            rospy.loginfo("Done with loading modle! Use {:.2f} seconds.".format(interval))
-            rospy.loginfo("There are [{}] objects you want to recognize.".format(kind_of_classifier))
+            interval = rclpy.get_time() - start_time
+            rclpy.loginfo("Done with loading modle! Use {:.2f} seconds.".format(interval))
+            rclpy.loginfo("There are [{}] objects you want to recognize.".format(kind_of_classifier))
         else:
-            rospy.loginfo("Your classifier is wrong. Please check out image label!")
+            rclpy.loginfo("Your classifier is wrong. Please check out image label!")
 
     def cuda(self,use=False):
         if use == True:
-            rospy.loginfo("Using cuda! Need some time to start...")
+            rclpy.loginfo("Using cuda! Need some time to start...")
             self.device = torch.device('cuda')
-            start_time = rospy.get_time()
+            start_time = rclpy.get_time()
             self.model = self.model.to(self.device)
-            interval = rospy.get_time() - start_time
-            rospy.loginfo("Done with starting! Can use cuda now! Use {:.2f} seconds to start.".format(interval)) 
+            interval = rclpy.get_time() - start_time
+            rclpy.loginfo("Done with starting! Can use cuda now! Use {:.2f} seconds to start.".format(interval)) 
         else:
-            rospy.loginfo("Do not use cuda!")
+            rclpy.loginfo("Do not use cuda!")
     
     def train(self,epochs=30, best_model_path="best_model", learning_rate=0.001, momentum=0.9):
         self.NUM_EPOCHS = epochs
         self.BEST_MODEL_PATH = rospkg.RosPack().get_path(self.package) + '/model/' + best_model_path + '.pth'
         self.best_accuracy = 0.0
         optimizer = optim.SGD(self.model.parameters(), lr=learning_rate, momentum=momentum)
-        start_time = rospy.get_time()
-        rospy.loginfo("Start training! Don't stop this process... ")
+        start_time = rclpy.get_time()
+        rclpy.loginfo("Start training! Don't stop this process... ")
         for epoch in range(self.NUM_EPOCHS):
-            epoch_start = rospy.get_time()
+            epoch_start = rclpy.get_time()
             for images, labels in iter(self.train_loader):
                 images = images.to(self.device)
                 labels = labels.to(self.device)
@@ -159,12 +156,12 @@ class Train_Model_Node(object):
             if test_accuracy > self.best_accuracy:
                 torch.save(self.model.state_dict(),self.BEST_MODEL_PATH)
                 self.best_accuracy = test_accuracy
-            epoch_interval = rospy.get_time() - epoch_start
-            rospy.loginfo("Epoch: {}, accuracy: {}, loss: {}, time: {:.2f}.".format(epoch + 1, test_accuracy, loss, epoch_interval))
-        interval = rospy.get_time() - start_time
-        rospy.loginfo("Done! Use {:.2f} seconds to train model.".format(interval))
+            epoch_interval = rclpy.get_time() - epoch_start
+            rclpy.loginfo("Epoch: {}, accuracy: {}, loss: {}, time: {:.2f}.".format(epoch + 1, test_accuracy, loss, epoch_interval))
+        interval = rclpy.get_time() - start_time
+        rclpy.loginfo("Done! Use {:.2f} seconds to train model.".format(interval))
         self.recording(model_name=best_model_path, train_time=round(interval, 2), accuracy=self.best_accuracy, labels=self.yaml_dict)
-        rospy.loginfo("Please check out you model and recording in [{}]".format(rospkg.RosPack().get_path(self.package) + '/model/'))
+        rclpy.loginfo("Please check out you model and recording in [{}]".format(rospkg.RosPack().get_path(self.package) + '/model/'))
 
     def getFilePath(self,name ,folder="image"):
         rospack = rospkg.RosPack()
@@ -178,8 +175,8 @@ class Train_Model_Node(object):
                 self.yaml_dict = yaml.load(in_file)
                 for key in list(self.yaml_dict.keys()) :
                     if key not in folder :
-                        rospy.loginfo("Please checkout folder [image] and label in [/param/image_label.yaml]. They are different.")
-                        rospy.loginfo("train_model.py will shutdown.")
+                        rclpy.loginfo("Please checkout folder [image] and label in [/param/image_label.yaml]. They are different.")
+                        rclpy.loginfo("train_model.py will shutdown.")
                         self.on_shutdown()
                 self.kind_of_classifier = len(list(self.yaml_dict.keys()))
             except yaml.YAMLError as exc:
@@ -195,11 +192,11 @@ class Train_Model_Node(object):
 
             for keys in self.yaml_dict:
                 if self.yaml_dict[keys] == 0:
-                    rospy.logwarn("No image in folder [{}].".format(rospkg.RosPack().get_path(self.package) + "/" + keys))
-                    rospy.logwarn("Please checkout the folder or use [rosun {} mkdir.py -rm {}] to remove folder.".format(self.package, keys))
+                    rclpy.logwarn("No image in folder [{}].".format(rospkg.RosPack().get_path(self.package) + "/" + keys))
+                    rclpy.logwarn("Please checkout the folder or use [rosun {} mkdir.py -rm {}] to remove folder.".format(self.package, keys))
                     self.on_shutdown()
         else:
-            rospy.logwarn("Please use  [{}]  to make the folder for saving data ".format(rospkg.RosPack().get_path(self.package) + "/script/mkdir.py"))
+            rclpy.logwarn("Please use  [{}]  to make the folder for saving data ".format(rospkg.RosPack().get_path(self.package) + "/script/mkdir.py"))
             self.on_shutdown()
         return self.yaml_dict, self.kind_of_classifier
 
@@ -209,7 +206,7 @@ class Train_Model_Node(object):
             time_format = '%Y-%m-%d-%H-%M-%S'
             now = datetime.datetime.now().strftime(time_format)
             name = self.train_save_model_name + "-" + str(now)
-            rospy.logwarn("Model name repeat nad will be reset! Now the name is: {}".format(name))
+            rclpy.logwarn("Model name repeat nad will be reset! Now the name is: {}".format(name))
             return name
         return self.train_save_model_name
 
@@ -254,25 +251,25 @@ class Train_Model_Node(object):
 
 
     def setup_parameter(self, param_name, default_value):
-        value = rospy.get_param(param_name, default_value)
+        value = rclpy.get_param(param_name, default_value)
         # Write to parameter server for transparency
-        rospy.set_param(param_name, value)
-        rospy.loginfo("[%s] %s = %s " % (self.node_name, param_name, value))
+        rclpy.set_param(param_name, value)
+        rclpy.loginfo("[%s] %s = %s " % (self.node_name, param_name, value))
         return value
 
     def on_shutdown(self): 
-        rospy.loginfo("{} Close.".format(self.node_name))
-        rospy.loginfo("{} shutdown.".format(self.node_name))
-        #rospy.logwarn("Now you can press [ctrl] + [c] ro close the launch file.")
-        rospy.sleep(1)
-        rospy.is_shutdown=True
+        rclpy.loginfo("{} Close.".format(self.node_name))
+        rclpy.loginfo("{} shutdown.".format(self.node_name))
+        #rclpy.logwarn("Now you can press [ctrl] + [c] ro close the launch file.")
+        rclpy.sleep(1)
+        rclpy.is_shutdown=True
         try:
             sys.exit(0)
         except:
-            rospy.loginfo("Now you can press [ctrl] + [c] to shutdwon the lauch file.")
+            rclpy.loginfo("Now you can press [ctrl] + [c] to shutdwon the lauch file.")
 
 if __name__ == "__main__" :
-    rospy.init_node("train_model",anonymous=False)
+    rclpy.init_node("train_model",anonymous=False)
     train_model_node = Train_Model_Node()
-    rospy.on_shutdown(train_model_node.on_shutdown)   
-    #rospy.spin()
+    rclpy.on_shutdown(train_model_node.on_shutdown)   
+    #rclpy.spin()

@@ -1,14 +1,8 @@
-#!/usr/bin/env python
-
-import os, sys, argparse, errno, yaml, time, select, termios, tty
-import cv2, numpy 
-import rospy, rospkg
-from cv_bridge import CvBridge, CvBridgeError
+import os, sys, yaml, select, termios, tty
+import rclpy, rospkg
 from sensor_msgs.msg import CompressedImage, Image
 from geometry_msgs.msg import Twist
-from uuid import uuid1
-from img_recognition.srv import save_action, save_actionResponse, select_label, select_labelResponse
-
+from img_recognition.srv import save_action, select_label
 
 
 class srv_client_save_image_action(object):
@@ -16,41 +10,41 @@ class srv_client_save_image_action(object):
     def __init__(self):
         
         # node information
-        self.node_name = rospy.get_name()
+        self.node_name = rclpy.get_name()
         self.veh_name = self.node_name.split("/")[1]
 
         # Publications
-        self.pub_car_cmd = rospy.Publisher("~cmd_vel", Twist, queue_size=1)
+        self.pub_car_cmd = rclpy.Publisher("~cmd_vel", Twist, queue_size=1)
 
         # wait for service start
-        rospy.loginfo("wait for service.Please launch [save_image.launch] in [object] ")
-        self.start = rospy.wait_for_service("/" + self.veh_name +"/save_image/save_image_action")
-        self.start = rospy.wait_for_service("/" + self.veh_name +"/save_image/select_label") 
+        rclpy.loginfo("wait for service.Please launch [save_image.launch] in [object] ")
+        self.start = rclpy.wait_for_service("/" + self.veh_name +"/save_image/save_image_action")
+        self.start = rclpy.wait_for_service("/" + self.veh_name +"/save_image/select_label") 
 
         # set service client
-        self.save_image_action = rospy.ServiceProxy("/" + self.veh_name + "/save_image/save_image_action",save_action)
-        self.select_label = rospy.ServiceProxy("/" + self.veh_name + "/save_image/select_label",select_label)
+        self.save_image_action = rclpy.ServiceProxy("/" + self.veh_name + "/save_image/save_image_action",save_action)
+        self.select_label = rclpy.ServiceProxy("/" + self.veh_name + "/save_image/select_label",select_label)
        
         # car parameter
         read_gain = self.readParamFromFile_gain()
  
         # ros parameter
-        self.label = rospy.get_param("/" +self.veh_name + "/save_image/label","default")
+        self.label = rclpy.get_param("/" +self.veh_name + "/save_image/label","default")
 
         # local parameter 
         self.picture = False
         self.all_label = self.readParamFromFile_label()
 
         # Done information
-        rospy.loginfo("You can press [w/a/s/d/x/q/r/z/c] to control the ROSKY with parameter in [{}] ".format(self.getFilePath_gain(self.veh_name)))
-        rospy.loginfo("Service Start! You can click [p] to save picture.")
-        rospy.logwarn("You can click [space] to change the label.")
-        rospy.loginfo("Don't forget check out the label now!")
-        rospy.logwarn("Now your label is [{}]".format(self.label))
+        rclpy.loginfo("You can press [w/a/s/d/x/q/r/z/c] to control the ROSKY with parameter in [{}] ".format(self.getFilePath_gain(self.veh_name)))
+        rclpy.loginfo("Service Start! You can click [p] to save picture.")
+        rclpy.logwarn("You can click [space] to change the label.")
+        rclpy.loginfo("Don't forget check out the label now!")
+        rclpy.logwarn("Now your label is [{}]".format(self.label))
        
         # timer
         try:
-            self.timer = rospy.Timer(rospy.Duration.from_sec(1),self.cb_timer)
+            self.timer = rclpy.Timer(rclpy.Duration.from_sec(1),self.cb_timer)
         except:
             _on_shutdown = self.on_shutdown() 
             termios.tcsetattr(sys.stdin, termios.TCSADRAIN, settings)
@@ -59,30 +53,29 @@ class srv_client_save_image_action(object):
     def call_srv_save_image_action(self,picture):    
         try :
             if picture == True :
-                rospy.loginfo("Capturing picture now!")
+                rclpy.loginfo("Capturing picture now!")
             else:
-                rospy.loginfo("Stop capturing!")       
+                rclpy.loginfo("Stop capturing!")       
             send_signal = self.save_image_action(picture)
-            image_count = rospy.get_param("/" +self.veh_name + "/save_image/label_image_count","didn't get!")         
-            rospy.loginfo("The [ {} ] images you have : {}".format(self.label,image_count))
-        except rospy.ServiceException as e :
+            image_count = rclpy.get_param("/" +self.veh_name + "/save_image/label_image_count","didn't get!")         
+            rclpy.loginfo("The [ {} ] images you have : {}".format(self.label,image_count))
+        except rclpy.ServiceException as e :
             print("Service call failed".format(e))
 
     def cb_timer(self,event):
-        _label = rospy.get_param("/" + self.veh_name +"/save_image/label","default")
+        _label = rclpy.get_param("/" + self.veh_name +"/save_image/label","default")
         if _label != self.label:
             self.label = _label
             termios.tcsetattr(sys.stdin, termios.TCSADRAIN, settings)
-            print ""
-            rospy.logwarn("Now your label is [{}]".format(self.label))
-            rospy.loginfo("You always can click [space] to change the label.")
-            rospy.sleep(0.5)
+            rclpy.logwarn("Now your label is [{}]".format(self.label))
+            rclpy.loginfo("You always can click [space] to change the label.")
+            rclpy.sleep(0.5)
 
     def call_srv_select_label(self,label="default"):    
         try :         
             send_signal = self.select_label(label)
-            #rospy.loginfo("Select the label : {}".format(label))
-        except rospy.ServiceException as e :
+            #rclpy.loginfo("Select the label : {}".format(label))
+        except rclpy.ServiceException as e :
             print("Service call failed".format(e))
             
     def getKey(self):
@@ -97,14 +90,14 @@ class srv_client_save_image_action(object):
 
     def on_shutdown(self): 
         termios.tcsetattr(sys.stdin, termios.TCSADRAIN, settings)
-        rospy.is_shutdown=True
+        rclpy.is_shutdown=True
 
 
     def setup_parameter(self, param_name, default_value):
-        value = rospy.get_param(param_name, default_value)
+        value = rclpy.get_param(param_name, default_value)
         # Write to parameter server for transparency
-        rospy.set_param(param_name, value)
-        rospy.loginfo("[%s] %s = %s " % (self.node_name, param_name, value))
+        rclpy.set_param(param_name, value)
+        rclpy.loginfo("[%s] %s = %s " % (self.node_name, param_name, value))
         return value
 
     def readParamFromFile_gain(self):
@@ -112,14 +105,14 @@ class srv_client_save_image_action(object):
         fname = self.getFilePath_gain(self.veh_name)
         # Use default.yaml if file doesn't exsit
         if not os.path.isfile(fname):
-            rospy.logwarn("[%s] %s does not exist. Using default.yaml." %(self.node_name,fname))
+            rclpy.logwarn("[%s] %s does not exist. Using default.yaml." %(self.node_name,fname))
             fname = self.getFilePath_gain("default")
         with open(fname, 'r') as in_file:
             try:
                 yaml_dict = yaml.load(in_file)
             except yaml.YAMLError as exc:
-                rospy.logfatal("[%s] YAML syntax error. File: %s fname. Exc: %s" %(self.node_name, fname, exc))
-                rospy.signal_shutdown()
+                rclpy.logfatal("[%s] YAML syntax error. File: %s fname. Exc: %s" %(self.node_name, fname, exc))
+                rclpy.signal_shutdown()
                 return
 
         # Set parameters using value in yaml file
@@ -141,14 +134,14 @@ class srv_client_save_image_action(object):
         fname = self.getFilePath_label()
         # Use default.yaml if file doesn't exsit
         if not os.path.isfile(fname):
-            rospy.logwarn("You don't have the label! Please check out {}".format(fname))
+            rclpy.logwarn("You don't have the label! Please check out {}".format(fname))
             self.on_shutdown()
         with open(fname, 'r') as in_file:
             try:
                 yaml_dict = yaml.load(in_file)
             except yaml.YAMLError as exc:
-                rospy.logfatal("[%s] YAML syntax error. File: %s fname. Exc: %s" %(self.node_name, fname, exc))
-                rospy.signal_shutdown()
+                rclpy.logfatal("[%s] YAML syntax error. File: %s fname. Exc: %s" %(self.node_name, fname, exc))
+                rclpy.signal_shutdown()
                 return
 
         # Set parameters using value in yaml file
@@ -187,7 +180,7 @@ class srv_client_save_image_action(object):
 
 if __name__ == "__main__" :
     settings = termios.tcgetattr(sys.stdin)
-    rospy.init_node("srv_client_save_image",anonymous=False)
+    rclpy.init_node("srv_client_save_image",anonymous=False)
     srv_call_save_image_action = srv_client_save_image_action()
     moveBindings = {
         'w':(1,0,0,0),
@@ -209,7 +202,7 @@ if __name__ == "__main__" :
         's':(0,0,0,0),
         'S':(0,0,0,0)
     }
-    rospy.spin()
+    rclpy.spin()
     while(1):
         key = srv_call_save_image_action.getKey()
         if key == 'p' or key == 'P':
@@ -221,7 +214,7 @@ if __name__ == "__main__" :
             change_label = srv_call_save_image_action.change_label()
         else:
             if key == '\x03':
-                rospy.on_shutdown(srv_call_save_image_action.on_shutdown)
+                rclpy.on_shutdown(srv_call_save_image_action.on_shutdown)
                 break
 
     termios.tcsetattr(sys.stdin, termios.TCSADRAIN, settings)
