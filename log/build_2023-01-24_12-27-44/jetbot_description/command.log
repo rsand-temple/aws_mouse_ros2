@@ -1,2 +1,0 @@
-Invoking command in '/home/rsand/aws_mouse/build/jetbot_description': /usr/bin/cmake /home/rsand/aws_mouse/src/jetbot_description -DCATKIN_INSTALL_INTO_PREFIX_ROOT=0 -DCMAKE_INSTALL_PREFIX=/home/rsand/aws_mouse/install/jetbot_description
-Invoked command in '/home/rsand/aws_mouse/build/jetbot_description' returned '1': /usr/bin/cmake /home/rsand/aws_mouse/src/jetbot_description -DCATKIN_INSTALL_INTO_PREFIX_ROOT=0 -DCMAKE_INSTALL_PREFIX=/home/rsand/aws_mouse/install/jetbot_description

@@ -1,2 +1,0 @@
-Invoking command in '/home/rsand/aws_mouse/build/img_recognition': /usr/bin/cmake /home/rsand/aws_mouse/src/img_recognition -DCATKIN_INSTALL_INTO_PREFIX_ROOT=0 -DCMAKE_INSTALL_PREFIX=/home/rsand/aws_mouse/install/img_recognition
-Invoked command in '/home/rsand/aws_mouse/build/img_recognition' returned '1': /usr/bin/cmake /home/rsand/aws_mouse/src/img_recognition -DCATKIN_INSTALL_INTO_PREFIX_ROOT=0 -DCMAKE_INSTALL_PREFIX=/home/rsand/aws_mouse/install/img_recognition
