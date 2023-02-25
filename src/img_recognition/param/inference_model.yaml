@@ -1,0 +1,2 @@
+model_pth: flower_pretrainm2_gpu.pth
+use_cuda: false

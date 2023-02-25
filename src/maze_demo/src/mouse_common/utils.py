@@ -5,13 +5,11 @@ import math
 import numpy as np
 from geometry_msgs.msg import Twist
 from geometry_msgs.msg import Point
-from sensor_msgs.msg import Imu
 from sensor_msgs.msg import LaserScan
-from sensor_msgs.msg import Range
 from nav_msgs.msg import Odometry
 from std_msgs.msg import Float32,String
 from std_msgs.msg import Float64
-from tf.transformations import euler_from_quaternion, quaternion_from_euler
+from transforms3d import euler_from_quaternion
 from img_recognition.msg import Prediction
 
 foundHeading = False
