@@ -1,3 +1,34 @@
+### Python packages needed
+
+sudo pip3 install torch torchvision
+
+### To make sure you have the latest version of colcon_core:
+
+sudo pip3 uninstall colcon_core
+sudo pip3 install colcon_core
+
+### To get euler_from_quaternion:
+
+sudo pip3 install transforms3d 
+
+### To get cv_bridge:
+
+https://github.com/ros-perception/vision_opencv/tree/humble/cv_bridge
+
+Don't forget to source your ros2 env first e.g. . /opt/ros/humble/setup.bash 
+
+```
+cd <YOUR_ROS2_WORKSPACE>/src
+git clone https://github.com/ros-perception/vision_opencv.git -b <ROS2_DISTRO>
+cd ..
+colcon build --packages-select cv_bridge --symlink-install
+```
+
+### To get JetCam:
+
+git clone https://github.com/NVIDIA-AI-IOT/jetcam
+
+## OLD NOTES ##
 ## 1. Install Robomaker 
 contribution from Mr. Nigel Gardiner from AWS
 ```
