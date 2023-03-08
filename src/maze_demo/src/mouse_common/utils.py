@@ -3,11 +3,12 @@ import yaml, time
 import rclpy
 import math
 import numpy as np
+import sys
 from geometry_msgs.msg import Twist
 from geometry_msgs.msg import Point
 from sensor_msgs.msg import LaserScan
 from nav_msgs.msg import Odometry
-from std_msgs.msg import Float32,String
+from std_msgs.msg import String
 from std_msgs.msg import Float64
 from transforms3d import euler_from_quaternion
 from img_recognition.msg import Prediction
@@ -16,7 +17,6 @@ foundHeading = False
 current_heading =0
 total_step =0
 orbit = 0
-
 
 linear_vel = 0.2
 same_cell = False
@@ -47,15 +47,23 @@ class Micromouse_Node(object):
         self.laser_ready=False
         self.label = ''
         self.confidence = 0
-        rclpy.loginfo("[{}]  Initializing micrmouse_node.py......".format(self.node_name))
+        node.get_logger().info("[{}]  Initializing micrmouse_node.py......".format(self.node_name))
 
         # configure subscriber
         self.first_sub = True
-        self.sub_msg = rclpy.Subscriber("/scan", LaserScan, self.calculate_lasers_range, queue_size=1)        
+        #self.sub_msg = rclpy.Subscriber("/scan", LaserScan, self.calculate_lasers_range, queue_size=1)
+        # ROS2
+        self.sub_msg = node.create_subscription(LaserScan, "/scan", self.calculate_lasers_range, 1)
+
         # self.sub_imumsg = rclpy.Subscriber("/imu", Imu, self.clbk_imu, queue_size=1)
-        self.sub_odommsg = rclpy.Subscriber("/odom", Odometry, self.odom_callback)
+        #self.sub_odommsg = rclpy.Subscriber("/odom", Odometry, self.odom_callback)
+        # ROS2
+        self.sub_odommsg = node.create_subscription(Odometry, "/odom", self.odom_callback)
+        
         #subscribe to predication topic
-        rclpy.Subscriber("/prediction", Prediction, self.clbk_prediction)
+        #rclpy.Subscriber("/prediction", Prediction, self.clbk_prediction)
+        # ROS2
+        node.create_subscription(Prediction, "/prediction", self.clbk_prediction)
 
         self._mved_distance = Float64()
         self._mved_distance.data = 0.0    
@@ -64,13 +72,17 @@ class Micromouse_Node(object):
 
 
         # configure Publisher
-        self.pub_msg = rclpy.Publisher('/cmd_vel', Twist, queue_size=1)
+        #self.pub_msg = rclpy.Publisher('/cmd_vel', Twist, queue_size=1)
+        # ROS2
+        self.pub_msg = node.create_publisher(Twist, '/cmd_vel', queue_size=1)
         self.laser_sensors = {'left': 0, 'frontleft': 0, 'front': 0, 'frontright': 0, 'right': 0}
 
         # self.laser_pub = rclpy.Publisher('/laser', Vector3, queue_size = 1)
 
         # configure Publisher for distance
-        self.distance_msg=rclpy.Publisher('/distance', String, queue_size=1)
+        #self.distance_msg=rclpy.Publisher('/distance', String, queue_size=1)
+        # ROS2
+        self.distance_msg=node.create_publisher(String, '/distance', queue_size=1)
         
 
         while (not self.laser_ready):
@@ -92,7 +104,9 @@ class Micromouse_Node(object):
             mv_forward = True
         vel_msg = Twist()
       
-        while not rclpy.is_shutdown():
+        #while not rclpy.is_shutdown():
+        # ROS2
+        while rclpy.ok():
             if self.laser_sensors is not None:
 
                 vel_msg.linear.x =0.1
@@ -117,7 +131,9 @@ class Micromouse_Node(object):
 
     def move_onecell(self, distance=0.3, kp = 111, DEBUG = False):
     
-        rate = rclpy.Rate(30)
+        #rate = rclpy.Rate(30)
+        # ROS2
+        rate = node.create_rate(30)
 
         self._mved_distance.data = 0.0
         self.get_init_position()
@@ -127,7 +143,9 @@ class Micromouse_Node(object):
         else:
             mv_forward = True
       
-        while not rclpy.is_shutdown():
+        #while not rclpy.is_shutdown():
+        # ROS2
+        while rclpy.ok():
             if self.laser_sensors is not None:
                 vel_msgl, leftd = self.follow_left_wall(mv_forward, desired_dist = 0.13, kp = kp)
                 vel_msgr, rightd = self.follow_right_wall(mv_forward, desired_dist = 0.13, kp = kp)
@@ -155,8 +173,6 @@ class Micromouse_Node(object):
                         vel_msg = vel_msgc
                         follow = 'center wall'
 
- 
-
                 self.pub_msg.publish(vel_msg)
                 self.print_walldistance(True, follow)
                 if (self.laser_sensors['front']<wall_distance_forward):
@@ -173,13 +189,15 @@ class Micromouse_Node(object):
         return self._mved_distance.data
 
     def clbk_prediction(self, data):
-        while (not rclpy.is_shutdown()) and (data is None):
+        # ROS2
+        while (rclpy.ok()) and (data is None):
             try:
                 data = rclpy.wait_for_message("/prediction", Prediction, timeout=1)
             except:
-                rclpy.loginfo("Current image prediction not ready yet, retrying for setting up image prediction firsts")
-                
-        if (not rclpy.is_shutdown()):
+                node.get_logger().info("Current image prediction not ready yet, retrying for setting up image prediction firsts")
+
+        # ROS2    
+        if (rclpy.ok()):
             if (data is None):
                 self.label = data.label
                 self.confidence = data.confidence
@@ -471,7 +489,7 @@ class Micromouse_Node(object):
             try:
                 data_odom = rclpy.wait_for_message("/odom", Odometry, timeout=1)
             except:
-                rclpy.loginfo("Current odom not ready yet, retrying for setting up init pose")
+                node.get_logger().info("Current odom not ready yet, retrying for setting up init pose")
         
         # Store the received odometry "position" variable in a Point instance 
         self._current_position = Point()
@@ -494,7 +512,7 @@ class Micromouse_Node(object):
         return yaml_dict
 
     def log_info(self):
-        rclpy.loginfo("Left  : %s, Front Left: %s, Front : %s, Front Right: %s, Right : %s", 
+        node.get_logger().info("Left  : %s, Front Left: %s, Front : %s, Front Right: %s, Right : %s", 
 	     self.laser_sensors['left'], self.laser_sensors['frontleft'], self.laser_sensors['front'],
 		          self.laser_sensors['frontright'], self.laser_sensors['right'])
 
@@ -528,7 +546,7 @@ class Micromouse_Node(object):
                 foundHeading = False   # updated heading after the rotation
                 break;
             if (self.laser_sensors['frontright']<0.08 or self.laser_sensors['frontleft']<0.08):
-                rclpy.loginfo('Too close to wall, cannot rotate anymore')
+                node.get_logger().info('Too close to wall, cannot rotate anymore')
             else:
                 vel_msg = Twist()
                 vel_msg.angular.z = kp *self.pi_to_pi(target_rad -self.yaw_odom)
@@ -550,8 +568,8 @@ class Micromouse_Node(object):
     
 
     def on_shutdown(self): 
-        rclpy.loginfo("[{}] Close.".format(self.node_name))
-        rclpy.loginfo("[{}] shutdown.".format(self.node_name))
+        node.get_logger().info("[{}] Close.".format(self.node_name))
+        node.get_logger().info("[{}] shutdown.".format(self.node_name))
         rclpy.sleep(1)
         rclpy.is_shutdown=True
 
@@ -559,13 +577,20 @@ class Micromouse_Node(object):
         value = rclpy.get_param(param_name, default_value)
         # Write to parameter server for transparency
         rclpy.set_param(param_name, value)
-        rclpy.loginfo("[%s] %s = %s " % (self.node_name, param_name, value))
+        node.get_logger().info("[%s] %s = %s " % (self.node_name, param_name, value))
         return value
 
 
 if __name__ == "__main__" :
-    rclpy.init_node("mouse_node", anonymous=False)
-  
+#    rclpy.init_node("mouse_node", anonymous=False)
+    # ROS2
+    rclpy.init(args=sys.argv)
+    global node
+    node = rclpy.create_node("mouse_node")
+    node.get_logger().info('Created node mouse_node')
+
     micromouse_node = Micromouse_Node()
     rclpy.on_shutdown(micromouse_node.on_shutdown)   
-    rclpy.spin()
+    #rclpy.spin()
+    # ROS2
+    rclpy.spin(node)
