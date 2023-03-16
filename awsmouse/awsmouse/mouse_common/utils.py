@@ -10,8 +10,8 @@ from sensor_msgs.msg import LaserScan
 from nav_msgs.msg import Odometry
 from std_msgs.msg import String
 from std_msgs.msg import Float64
-from transforms3d import euler_from_quaternion
 from img_recognition.msg import Prediction
+import transforms3d
 
 foundHeading = False
 current_heading =0
@@ -380,7 +380,7 @@ class Micromouse_Node(object):
         
         # Calculate the orientatiom from odom
         orientation_odom = [NewOrientation.x, NewOrientation.y, NewOrientation.z, NewOrientation.w]
-        (self.roll_odom, self.pitch_odom, self.yaw_odom) = euler_from_quaternion (orientation_odom)
+        (self.roll_odom, self.pitch_odom, self.yaw_odom) = quat2euler (orientation_odom)
         self.yaw_odom = self.pi_to_pi(self.yaw_odom)
         
         # Update curent heading
@@ -464,7 +464,7 @@ class Micromouse_Node(object):
         #global rotation_imu, current_heading, foundHeading
         #orientation_q = msg.orientation
         #orientation_list = [orientation_q.x, orientation_q.y, orientation_q.z, orientation_q.w]
-        #(self.roll_imu, self.pitch_imu, self.yaw_imu) = euler_from_quaternion (orientation_list)
+        #(self.roll_imu, self.pitch_imu, self.yaw_imu) = quat2euler (orientation_list)
         # self.yaw_imu = self.pi_to_pi(self.yaw_imu)
         
         #if (not foundHeading):

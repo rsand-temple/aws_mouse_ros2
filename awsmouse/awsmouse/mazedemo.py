@@ -8,7 +8,7 @@ import sys
 import rclpy
 
 # Micromouse_Node: A Node to manage Micromouse behavior. More can be found on this in the maze_demo/src/mouse_common/utils.py file
-from mouse_common.utils import Micromouse_Node
+from .mouse_common.utils import Micromouse_Node
 
 # Minimum Safety Range to Wall
 wall_distance = 0.2
