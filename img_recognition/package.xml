@@ -18,6 +18,7 @@
   
   <buildtool_depend>rosidl_default_generators</buildtool_depend>
   <exec_depend>rosidl_default_runtime</exec_depend>
+  <exec_depend>img_recognition_resources</exec_depend>
   <depend>Inference</depend>
   <depend>Prediction</depend>
 </package>

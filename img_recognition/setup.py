@@ -1,6 +1,6 @@
 from setuptools import setup
 
-package_name = 'img_recognition_resources'
+package_name = 'img_recognition'
 
 setup(
     name=package_name,
