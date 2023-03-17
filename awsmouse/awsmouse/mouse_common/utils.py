@@ -10,7 +10,7 @@ from sensor_msgs.msg import LaserScan
 from nav_msgs.msg import Odometry
 from std_msgs.msg import String
 from std_msgs.msg import Float64
-from img_recognition.msg import Prediction
+from img_recognition_resources.msg import Prediction
 import transforms3d
 
 foundHeading = False

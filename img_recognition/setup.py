@@ -5,7 +5,7 @@ package_name = 'img_recognition'
 setup(
     name=package_name,
     version='0.0.1',
-    packages=[package_name + '/msg',package_name + '/param'],
+    packages=[package_name],
     data_files=[
         ('share/ament_index/resource_index/packages',
             ['resource/' + package_name]),
@@ -15,9 +15,11 @@ setup(
     zip_safe=True,
     maintainer='Richard Sand',
     maintainer_email='richard.sand0001@temple.edu',
-    description='Resources for img_recognition',
-    license='Apache2.0',
+    description='TODO: Package description',
+    license='TODO: License declaration',
     tests_require=['pytest'],
     entry_points={
+        'console_scripts': [
+        ],
     },
 )
