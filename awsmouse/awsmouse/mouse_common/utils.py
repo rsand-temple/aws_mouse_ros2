@@ -38,11 +38,11 @@ right = 1
 going_right = 2
 
 class Micromouse_Node(object):
-    def __init__(self):
+    def __init__(self, node):
         self.package = "maze_demo"
 
-        self.node_name = rclpy.get_name()
-        self.veh_name = self.node_name.split("/")[1]
+        self.node_name = node.get_name()
+        #self.veh_name = self.node_name.split("/")[1]
         self.start = rclpy.wait_for_message("/scan", LaserScan)
         self.laser_ready=False
         self.label = ''
@@ -585,11 +585,10 @@ if __name__ == "__main__" :
 #    rclpy.init_node("mouse_node", anonymous=False)
     # ROS2
     rclpy.init(args=sys.argv)
-    global node
     node = rclpy.create_node("mouse_node")
     node.get_logger().info('Created node mouse_node')
 
-    micromouse_node = Micromouse_Node()
+    micromouse_node = Micromouse_Node(node)
     rclpy.on_shutdown(micromouse_node.on_shutdown)   
     #rclpy.spin()
     # ROS2
