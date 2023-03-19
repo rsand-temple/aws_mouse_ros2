@@ -43,7 +43,7 @@ class Micromouse_Node(object):
 
         self.node_name = node.get_name()
         #self.veh_name = self.node_name.split("/")[1]
-        self.start = rclpy.wait_for_message("/scan", LaserScan)
+        #self.start = rclpy.wait_for_message("/scan", LaserScan)
         self.laser_ready=False
         self.label = ''
         self.confidence = 0
@@ -58,12 +58,12 @@ class Micromouse_Node(object):
         # self.sub_imumsg = rclpy.Subscriber("/imu", Imu, self.clbk_imu, queue_size=1)
         #self.sub_odommsg = rclpy.Subscriber("/odom", Odometry, self.odom_callback)
         # ROS2
-        self.sub_odommsg = node.create_subscription(Odometry, "/odom", self.odom_callback)
+        self.sub_odommsg = node.create_subscription(Odometry, "/odom", self.odom_callback, rclpy.qos.QoSPolicyKind.RELIABILITY)
         
         #subscribe to predication topic
         #rclpy.Subscriber("/prediction", Prediction, self.clbk_prediction)
         # ROS2
-        node.create_subscription(Prediction, "/prediction", self.clbk_prediction)
+        node.create_subscription(Prediction, "/prediction", self.clbk_prediction, rclpy.qos.QoSPolicyKind.RELIABILITY)
 
         self._mved_distance = Float64()
         self._mved_distance.data = 0.0    
@@ -74,7 +74,7 @@ class Micromouse_Node(object):
         # configure Publisher
         #self.pub_msg = rclpy.Publisher('/cmd_vel', Twist, queue_size=1)
         # ROS2
-        self.pub_msg = node.create_publisher(Twist, '/cmd_vel', queue_size=1)
+        self.pub_msg = node.create_publisher(Twist, '/cmd_vel', rclpy.qos.QoSPolicyKind.RELIABILITY)
         self.laser_sensors = {'left': 0, 'frontleft': 0, 'front': 0, 'frontright': 0, 'right': 0}
 
         # self.laser_pub = rclpy.Publisher('/laser', Vector3, queue_size = 1)
@@ -82,7 +82,7 @@ class Micromouse_Node(object):
         # configure Publisher for distance
         #self.distance_msg=rclpy.Publisher('/distance', String, queue_size=1)
         # ROS2
-        self.distance_msg=node.create_publisher(String, '/distance', queue_size=1)
+        self.distance_msg=node.create_publisher(String, '/distance', rclpy.qos.QoSPolicyKind.RELIABILITY)
         
 
         while (not self.laser_ready):
