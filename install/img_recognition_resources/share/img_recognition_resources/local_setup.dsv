@@ -1,4 +1,0 @@
-source;share/img_recognition_resources/environment/ament_prefix_path.sh
-source;share/img_recognition_resources/environment/library_path.sh
-source;share/img_recognition_resources/environment/path.sh
-source;share/img_recognition_resources/environment/pythonpath.sh
