@@ -43,7 +43,8 @@ class Micromouse_Node(object):
 
         self.node_name = node.get_name()
         #self.veh_name = self.node_name.split("/")[1]
-        #self.start = rclpy.wait_for_message("/scan", LaserScan)
+        # Can replace with a hardcode delay here
+        #self.start = rclpy.wait_for_message("/scan", LaserScan) 
         self.laser_ready=False
         self.label = ''
         self.confidence = 0
@@ -93,7 +94,7 @@ class Micromouse_Node(object):
 
     def move_forward(self, distance=0.3, DEBUG = False):
     
-        rate = rclpy.Rate(30)
+        rate = node.create_rate(30)
 
         self._mved_distance.data = 0.0
         self.get_init_position()
