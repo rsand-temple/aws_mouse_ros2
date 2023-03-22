@@ -2,11 +2,21 @@
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
   <name>jetbot_description</name>
-  <version>0.0.0</version>
-  <description>Package jetbot_description</description>
+  <version>2.0.0</version>
+  <description>
+    <p>URDF Description package for JetBot</p>
+    <p>This package contains configuration data, 3D models and launch files for JetBot robot</p>
+  </description>
   <maintainer email="richard.sand0001@temple.edu">rsand</maintainer>
-  <license>Apache2.0</license>
+  <license>MIT-0</license>
 
+  <depend>urdf</depend>
+  <depend>joint_state_publisher</depend>
+  <depend>joint_state_publisher_gui</depend>
+  <depend>robot_state_publisher</depend>
+  <depend>rviz2</depend>
+  <depend>xacro</depend>
+  
   <test_depend>ament_copyright</test_depend>
   <test_depend>ament_flake8</test_depend>
   <test_depend>ament_pep257</test_depend>
@@ -16,6 +26,9 @@
     <build_type>ament_python</build_type>
   </export>
 
+  <exec_depend>ros2launch</exec_depend>
   <exec_depend>pid_tune</exec_depend>
+  <exec_depend>rviz</exec_depend>
+  <exec_depend>gazebo_ros</exec_depend>
 
 </package>

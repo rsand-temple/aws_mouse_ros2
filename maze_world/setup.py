@@ -1,7 +1,6 @@
 from setuptools import setup
-from glob import glob
 
-package_name = 'jetbot_description'
+package_name = 'maze_world'
 
 setup(
     name=package_name,
@@ -11,7 +10,6 @@ setup(
         ('share/ament_index/resource_index/packages',
             ['resource/' + package_name]),
         ('share/' + package_name, ['package.xml']),
-        ('share/' + package_name, glob('launch/*.launch'))
     ],
     install_requires=['setuptools'],
     zip_safe=True,
@@ -22,7 +20,7 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'runforward = jetbot_description.runforward:main'
+            'world.launch = maze_world.world.launch:main'
         ],
     },
 )
