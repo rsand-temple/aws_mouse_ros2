@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8" ?>
 <launch>
 
   <arg name="model" default="$(find-pkg-share jetbot_description)/urdf/jetbot.urdf"/>
@@ -7,17 +8,17 @@
   <!-- param name="robot_description" textfile="$(find-pkg-share jetbot_description)/urdf/jetbot.urdf" / -->
 
   <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher">
-    <param name="robot_description" command="$(find-pkg-share xacro)/xacro --inorder $(arg model)" />
-    <param name="use_gui" value="$(arg gui)" />
+    <param name="robot_description" command="$(find-pkg-share xacro)/xacro --inorder $(var model)" />
+    <param name="use_gui" value="$(var gui)" />
   </node>
 
   <node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher">
-    <param name="robot_description" command="$(find-pkg-share xacro)/xacro --inorder $(arg model)" />
-    <param name="use_gui" value="$(arg gui)" />
+    <param name="robot_description" command="$(find-pkg-share xacro)/xacro --inorder $(var model)" />
+    <param name="use_gui" value="$(var gui)" />
   </node>
   
-  <node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rvizconfig)" required="true">
-    <param name="robot_description" command="$(find-pkg-share xacro)/xacro --inorder $(arg model)" />
-    <param name="use_gui" value="$(arg gui)" />
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(var rvizconfig)" required="true">
+    <param name="robot_description" command="$(find-pkg-share xacro)/xacro --inorder $(var model)" />
+    <param name="use_gui" value="$(var gui)" />
   </node>
 </launch>

@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8" ?>
 <launch>
   <!-- ROS2: rosparam has been replaced by from attribute in node elements -->
   <!-- ROS2: find has been replaced by find-pkg-share -->

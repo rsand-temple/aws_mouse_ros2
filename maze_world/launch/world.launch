@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <launch>
-      <env name="GAZEBO_MODEL_PATH" value="$(find maze_world)/models"/>
+      <env name="GAZEBO_MODEL_PATH" value="$(find-pkg-share maze_world)/models"/>
  
         <!-- overwriting these args -->
         <arg name="debug" default="false" />
@@ -9,14 +9,14 @@
         <arg name="worldfile" default="empty_rose.world" />
         
         <!-- arg name="world" default="$(find maze_world)/world/jetbotSize.world" / -->
-        <arg name="world" default="$(find maze_world)/world/$(arg worldfile)" />
+        <arg name="world" default="$(find-pkg-share maze_world)/world/$(var worldfile)" />
 
         <!-- include gazebo_ros launcher -->
-        <include file="$(find gazebo_ros)/launch/empty_world.launch">
-                <arg name="world_name" value="$(arg world)" />
-                <arg name="debug" value="$(arg debug)" />
-                <arg name="gui" value="$(arg gui)" />
-                <arg name="paused" value="$(arg pause)" />
+        <include file="$(find-pkg-share gazebo_ros)/launch/empty_world.launch">
+                <arg name="world_name" value="$(var world)" />
+                <arg name="debug" value="$(var debug)" />
+                <arg name="gui" value="$(var gui)" />
+                <arg name="paused" value="$(var pause)" />
                 <arg name="use_sim_time" value="true" />
         </include>
 </launch>
