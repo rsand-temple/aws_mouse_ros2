@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <launch>
-  <!-- <node name="tf_footprint_base" pkg="tf" type="static_transform_publisher" -->
+  <!-- node name="tf_footprint_base" pkg="tf" type="static_transform_publisher" -->
   <!--   args="0 0 0 0 0 0 base_link base_footprint 40" /> -->
   <!-- param 
     name="robot_description" 
-    command="$(find xacro)/xacro --inorder '$(find jetbot_description)/urdf/jetbot.urdf' "/ -->
+    command="$(find xacro)/xacro dashdashinorder '$(find jetbot_description)/urdf/jetbot.urdf' "/ -->
  
     <arg name="x" default="0"/>
     <arg name="y" default="0"/>
@@ -13,10 +13,11 @@
     <arg name="R" default="0"/>
     <arg name="Y" default="0"/>
 
-
-    <node name="jetbot_spawn" pkg="gazebo_ros" type="spawn_model" output="screen"
-          args="-urdf -param robot_description -model jetbot -x $(arg x) -y $(arg y) -z $(arg z) -P $(arg P) -R $(arg R) -Y $(arg Y)">
-        <param name="robot_description" command="$(find-pkg-share xacro)/xacro --inorder '$(find-pkg-share jetbot_description)/urdf/jetbot.urdf' "/>
+    <!-- node name="jetbot_spawn" pkg="gazebo_ros" type="spawn_model" output="screen" -->
+    <node name="jetbot_spawn" pkg="gazebo_ros" exec="spawn_entity.py" output="screen"
+          args="-urdf -param robot_description -model jetbot -x $(var x) -y $(var y) -z $(var z) -P $(var P) -R $(var R) -Y $(var Y)">
+        <!-- param name="robot_description" command="$(find-pkg-share xacro)/xacro dashdashinorder '$(find-pkg-share jetbot_description)/urdf/jetbot.urdf' "/ -->
+        <param name="robot_description" value="$(command 'xacro $(find-pkg-share jetbot_description)/urdf/jetbot.urdf')"/>
     </node>
   
     <!--node name="base_controller_spawner"  pkg="controller_manager"  type="spawner"  output="screen"  		args="mobile_base_controller" /-->
@@ -33,6 +34,6 @@
   <!--   type="spawn_model"  -->
   <!--   respawn="false"  -->
   <!--   output="screen"  -->
-  <!--   args="&#45;urdf &#45;model $(arg model) &#45;param robot_description &#45;z 1 &#45;x &#45;2 &#45;y &#45;2"/> -->
+  <!--   args="&#45;urdf &#45;model $(var model) &#45;param robot_description &#45;z 1 &#45;x &#45;2 &#45;y &#45;2"/> -->
   <!-- <node name="fake_joint_calibration" pkg="rostopic" type="rostopic" args="pub /calibrated std_msgs/Bool true" /> -->
 </launch>

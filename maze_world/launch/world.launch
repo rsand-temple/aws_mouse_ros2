@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <launch>
-      <env name="GAZEBO_MODEL_PATH" value="$(find-pkg-share maze_world)/models"/>
+      <set_env name="GAZEBO_MODEL_PATH" value="$(find-pkg-share maze_world)/models"/>
  
         <!-- overwriting these args -->
         <arg name="debug" default="false" />
@@ -12,11 +12,11 @@
         <arg name="world" default="$(find-pkg-share maze_world)/world/$(var worldfile)" />
 
         <!-- include gazebo_ros launcher -->
+                <let name="world_name" value="$(var world)" />
+                <let name="debug" value="$(var debug)" />
+                <let name="gui" value="$(var gui)" />
+                <let name="paused" value="$(var pause)" />
+                <let name="use_sim_time" value="true" />
         <include file="$(find-pkg-share gazebo_ros)/launch/empty_world.launch">
-                <arg name="world_name" value="$(var world)" />
-                <arg name="debug" value="$(var debug)" />
-                <arg name="gui" value="$(var gui)" />
-                <arg name="paused" value="$(var pause)" />
-                <arg name="use_sim_time" value="true" />
         </include>
 </launch>

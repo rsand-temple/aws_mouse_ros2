@@ -9,7 +9,9 @@
     <arg name="urdf_file" default="$(find-pkg-share xacro)/xacro --inorder '$(find-pkg-share jetbot_description)/urdf/jetbot.urdf' laser_visualize:=$(var laser_visualize) camera_visualize:=$(var camera_visualize) camera_xyz:='$(var camera_xyz)' camera_rpy:='$(var camera_rpy)' odomsource:='$(var odomsource)' " />
 
     <node pkg="robot_state_publisher" exec="robot_state_publisher" name="robot_state_publisher">
-        <param name="robot_description" from="$(var urdf_file)" />
-        <param name="publish_frequency" type="double" value="50.0" />
+        <!-- param name="robot_description" from="$(var urdf_file)" / -->
+        <param from="$(var urdf_file)" />
+        <!-- param name="publish_frequency" type="double" value="50.0" / -->
+        <param name="publish_frequency" type="float" value="50.0" />
     </node>
 </launch>

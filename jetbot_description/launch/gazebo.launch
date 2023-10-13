@@ -17,8 +17,8 @@
 
   <!-- We resume the logic in empty_world.launch, changing only the name of the world to be launched -->
   <!--include file="$(find-pkg-share aws_robomaker_racetrack_world)/launch/racetrack.launch"-->
+    <let name="gui" value="$(var gui)" /> 
   <include file="$(find-pkg-share gazebo_ros)/launch/empty_world.launch">
-    <arg name="gui" value="$(var gui)" /> 
   </include>
 
   <include file="$(find-pkg-share jetbot_description)/launch/jetbot_description.launch" />
@@ -32,7 +32,7 @@
     <param from="$(find-pkg-share jetbot_description)/config/jetbot_diff_drive_control_pid.yaml" />
   </node>
   
-  <node name="base_controller_spawner"  pkg="controller_manager"  exec="spawner"  output="screen"  		args="mobile_base_controller"
+  <node name="base_controller_spawner"  pkg="controller_manager"  exec="spawner"  output="screen"  args="mobile_base_controller"
   >
     <param from="$(find-pkg-share jetbot_description)/config/jetbot_diff_drive_control.yaml" /> 
     <param from="$(find-pkg-share jetbot_description)/config/jetbot_diff_drive_control_pid.yaml" />
