@@ -13,10 +13,11 @@
     <arg name="R" default="0"/>
     <arg name="Y" default="0"/>
 
-    <!-- node name="jetbot_spawn" pkg="gazebo_ros" type="spawn_model" output="screen" -->
-    <!-- THIS HERE DOES NOT WORK - SPAWN_ENTITY IS NOT A REPLACEMENT FOR SPAWN_MODEL -->
-    <node name="jetbot_spawn" pkg="gazebo_ros" exec="spawn_entity.py" output="screen"
+    <!-- node name="jetbot_spawn" pkg="gazebo_ros" type="spawn_model" output="screen" 
           args="-urdf -param robot_description -model jetbot -x $(var x) -y $(var y) -z $(var z) -P $(var P) -R $(var R) -Y $(var Y)">
+    -->
+    <node name="jetbot_spawn" pkg="gazebo_ros" exec="spawn_entity.py" output="screen"
+          args="-topic robot_description -entity jetbot -x $(var x) -y $(var y) -z $(var z) -P $(var P) -R $(var R) -Y $(var Y)">
         <!-- param name="robot_description" command="$(find-pkg-share xacro)/xacro dashdashinorder '$(find-pkg-share jetbot_description)/urdf/jetbot.urdf' "/ -->
         <param name="robot_description" value="$(command 'xacro $(find-pkg-share jetbot_description)/urdf/jetbot.urdf')"/>
     </node>

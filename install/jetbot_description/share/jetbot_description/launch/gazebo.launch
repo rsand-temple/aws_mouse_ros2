@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<launch>
+  <!-- ROS2: rosparam has been replaced by from attribute in node elements -->
+  <!-- ROS2: find has been replaced by find-pkg-share -->
+  <!-- ROS2: node attr type is now exec -->
+
+  <!-- these are the arguments you can pass this launch file, for example paused:=true -->
+  <arg name="paused" default="false"/>
+  <arg name="use_sim_time" default="true"/>
+  <arg name="gui" default="true"/>
+  <arg name="headless" default="false"/>
+  <arg name="debug" default="false"/>
+  <arg name="model" default="$(find-pkg-share jetbot_description)/urdf/jetbot.urdf"/>
+  <arg name="x" default="10"/>
+  <arg name="y" default="10"/>
+  <arg name="z" default="0.1"/>
+
+  <!-- We resume the logic in empty_world.launch, changing only the name of the world to be launched -->
+  <!--include file="$(find-pkg-share aws_robomaker_racetrack_world)/launch/racetrack.launch"-->
+    <let name="gui" value="$(var gui)" /> 
+  <include file="$(find-pkg-share gazebo_ros)/launch/empty_world.launch">
+  </include>
+
+  <include file="$(find-pkg-share jetbot_description)/launch/jetbot_description.launch" />
+
+  <!-- push robot_description to factory and spawn robot in gazebo -->
+  <node name="urdf_spawner" pkg="gazebo_ros" exec="spawn_model"
+        respawn="false" output="screen"
+        args="-urdf -param robot_description -model jetbot -x $(var x) -y $(var y) -z $(var z)" 
+  >
+    <param from="$(find-pkg-share jetbot_description)/config/jetbot_diff_drive_control.yaml" /> 
+    <param from="$(find-pkg-share jetbot_description)/config/jetbot_diff_drive_control_pid.yaml" />
+  </node>
+  
+  <node name="base_controller_spawner"  pkg="controller_manager"  exec="spawner"  output="screen"  args="mobile_base_controller"
+  >
+    <param from="$(find-pkg-share jetbot_description)/config/jetbot_diff_drive_control.yaml" /> 
+    <param from="$(find-pkg-share jetbot_description)/config/jetbot_diff_drive_control_pid.yaml" />
+  </node>
+
+  <node name="joint_controllers_spawner" pkg="controller_manager" exec="spawner" respawn="false"
+  	output="screen"  args="joint_state_controller
+                         left_wheel_velocity_controller
+                         right_wheel_velocity_controller" >
+    <param from="$(find-pkg-share jetbot_description)/config/jetbot_diff_drive_control.yaml" /> 
+    <param from="$(find-pkg-share jetbot_description)/config/jetbot_diff_drive_control_pid.yaml" />
+  </node>
+
+</launch>

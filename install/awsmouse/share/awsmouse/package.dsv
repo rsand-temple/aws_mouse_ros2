@@ -1,0 +1,6 @@
+source;share/awsmouse/hook/pythonpath.ps1
+source;share/awsmouse/hook/pythonpath.dsv
+source;share/awsmouse/hook/pythonpath.sh
+source;share/awsmouse/hook/ament_prefix_path.ps1
+source;share/awsmouse/hook/ament_prefix_path.dsv
+source;share/awsmouse/hook/ament_prefix_path.sh

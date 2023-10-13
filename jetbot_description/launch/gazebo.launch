@@ -24,9 +24,13 @@
   <include file="$(find-pkg-share jetbot_description)/launch/jetbot_description.launch" />
 
   <!-- push robot_description to factory and spawn robot in gazebo -->
-  <node name="urdf_spawner" pkg="gazebo_ros" exec="spawn_model"
+  <!-- node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model"
         respawn="false" output="screen"
         args="-urdf -param robot_description -model jetbot -x $(var x) -y $(var y) -z $(var z)" 
+  -->
+  <node name="urdf_spawner" pkg="gazebo_ros" exec="spawn_entity.py"
+        respawn="false" output="screen"
+        args="-topic robot_description -model jetbot -x $(var x) -y $(var y) -z $(var z)" 
   >
     <param from="$(find-pkg-share jetbot_description)/config/jetbot_diff_drive_control.yaml" /> 
     <param from="$(find-pkg-share jetbot_description)/config/jetbot_diff_drive_control_pid.yaml" />
